@@ -10,7 +10,7 @@ export const Hero = () => {
           ARCADE
         </h1>
         <p className="text-xl md:text-2xl text-foreground/80 mb-8 max-w-2xl">
-          An open-source gaming platform where anyone can submit their games
+          An open-source gaming platform where anyone can play and create their own games
         </p>
         <Button variant="arcade" size="lg" className="text-lg px-8 py-6 h-auto">
           ENTER THE ARCADE
