@@ -1,0 +1,17 @@
+{
+  "name": "The Vibe Arcade",
+  "short_name": "Vibe Arcade",
+  "description": "An open-source gaming platform where anyone can play and create their own games",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0118",
+  "theme_color": "#8b5cf6",
+  "icons": [
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
