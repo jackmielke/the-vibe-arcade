@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ChevronRight } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
@@ -24,58 +23,74 @@ export const CategoryPills = () => {
   return (
     <div className="flex items-center gap-3 mb-8">
       <div className="flex items-center gap-3 overflow-x-auto scrollbar-hide pb-2 flex-1">
-        <Button
-          variant={selectedCategory === null ? "arcade" : "glass"}
-          size="lg"
-          className="rounded-full px-6 whitespace-nowrap"
+        <button
+          className={`
+            px-6 py-3 rounded-full font-bold whitespace-nowrap transition-all duration-300
+            ${selectedCategory === null 
+              ? 'bg-gradient-to-r from-accent to-neon-purple text-primary-foreground shadow-[0_0_20px_rgba(168,85,247,0.5)] scale-105' 
+              : 'bg-glass/30 backdrop-blur-md border border-glass-border/40 text-foreground/80 hover:bg-glass/50 hover:border-accent/50 hover:text-foreground'
+            }
+          `}
           onClick={() => setSelectedCategory(null)}
         >
           All Games
-        </Button>
+        </button>
         {categories.slice(0, 5).map((category) => (
-          <Button
+          <button
             key={category.slug}
-            variant={selectedCategory === category.slug ? "arcade" : "glass"}
-            size="lg"
-            className="rounded-full px-6 whitespace-nowrap"
+            className={`
+              px-6 py-3 rounded-full font-bold whitespace-nowrap transition-all duration-300
+              ${selectedCategory === category.slug
+                ? 'bg-gradient-to-r from-accent to-neon-purple text-primary-foreground shadow-[0_0_20px_rgba(168,85,247,0.5)] scale-105' 
+                : 'bg-glass/30 backdrop-blur-md border border-glass-border/40 text-foreground/80 hover:bg-glass/50 hover:border-accent/50 hover:text-foreground'
+              }
+            `}
             onClick={() => setSelectedCategory(category.slug)}
           >
             {category.name}
-          </Button>
+          </button>
         ))}
       </div>
       
       {categories.length > 5 && (
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="glass" size="lg" className="rounded-full px-6 gap-2 whitespace-nowrap flex-shrink-0">
+            <button className="px-6 py-3 rounded-full font-semibold whitespace-nowrap flex-shrink-0 bg-glass/20 backdrop-blur-md border border-glass-border/30 text-foreground/70 hover:bg-glass/40 hover:border-accent/40 hover:text-foreground transition-all duration-300 flex items-center gap-2">
               View All
               <ChevronRight className="h-4 w-4" />
-            </Button>
+            </button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[500px]">
+          <DialogContent className="sm:max-w-[500px] bg-card/95 backdrop-blur-xl border-border">
             <DialogHeader>
-              <DialogTitle>All Categories</DialogTitle>
+              <DialogTitle className="text-2xl font-bold">All Categories</DialogTitle>
             </DialogHeader>
             <div className="grid grid-cols-2 gap-3 mt-4">
-              <Button
-                variant={selectedCategory === null ? "arcade" : "glass"}
-                size="lg"
-                className="rounded-full"
+              <button
+                className={`
+                  px-6 py-3 rounded-full font-bold transition-all duration-300
+                  ${selectedCategory === null
+                    ? 'bg-gradient-to-r from-accent to-neon-purple text-primary-foreground shadow-[0_0_20px_rgba(168,85,247,0.5)]' 
+                    : 'bg-glass/30 backdrop-blur-md border border-glass-border/40 text-foreground/80 hover:bg-glass/50 hover:border-accent/50'
+                  }
+                `}
                 onClick={() => setSelectedCategory(null)}
               >
                 All Games
-              </Button>
+              </button>
               {categories.map((category) => (
-                <Button
+                <button
                   key={category.slug}
-                  variant={selectedCategory === category.slug ? "arcade" : "glass"}
-                  size="lg"
-                  className="rounded-full"
+                  className={`
+                    px-6 py-3 rounded-full font-bold transition-all duration-300
+                    ${selectedCategory === category.slug
+                      ? 'bg-gradient-to-r from-accent to-neon-purple text-primary-foreground shadow-[0_0_20px_rgba(168,85,247,0.5)]' 
+                      : 'bg-glass/30 backdrop-blur-md border border-glass-border/40 text-foreground/80 hover:bg-glass/50 hover:border-accent/50'
+                    }
+                  `}
                   onClick={() => setSelectedCategory(category.slug)}
                 >
                   {category.name}
-                </Button>
+                </button>
               ))}
             </div>
           </DialogContent>
