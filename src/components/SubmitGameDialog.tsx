@@ -157,9 +157,13 @@ export const SubmitGameDialog = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="glass" size="sm" className="gap-2">
-          <Plus className="h-4 w-4" />
-          <span className="hidden sm:inline">Submit</span>
+        <Button 
+          variant="arcade" 
+          size="lg" 
+          className="gap-2 font-bold text-lg px-8 py-6 rounded-full shadow-[var(--glass-glow)] hover:shadow-[var(--glass-intense)] transition-all"
+        >
+          <Plus className="h-5 w-5" />
+          Submit a Game
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px]">
