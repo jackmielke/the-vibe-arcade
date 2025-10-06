@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { SubmitGameDialog } from "@/components/SubmitGameDialog";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,7 @@ const players = [
 ];
 
 const Index = () => {
+  const navigate = useNavigate();
   const { data: games = [], isLoading } = useQuery({
     queryKey: ['games'],
     queryFn: async () => {
@@ -92,27 +94,51 @@ const Index = () => {
             <section>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-3xl font-bold text-foreground">Top Games</h2>
-                <ChevronRight className="h-6 w-6 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+                <button
+                  onClick={() => navigate('/arcade')}
+                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-glass/30 backdrop-blur-md border border-glass-border/40 text-foreground/80 hover:bg-glass/50 hover:border-accent/50 hover:text-foreground transition-all"
+                >
+                  View All
+                  <ChevronRight className="h-4 w-4" />
+                </button>
               </div>
               {isLoading ? (
                 <div className="text-center py-8 text-muted-foreground">Loading...</div>
               ) : games.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">No games yet</div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {games.map((game, index) => (
-                    <GameCard
-                      key={game.id}
-                      id={game.id}
-                      title={game.title}
-                      description={game.description || ""}
-                      platforms={["Web"]}
-                      image={game.thumbnail_url || `https://images.unsplash.com/photo-${['1511512578047-dfb367046420', '1538481199705-c710c4e965fc', '1579566346927-c68383817a25'][index % 3]}?w=800&auto=format&fit=crop`}
-                      rank={index + 1}
-                    />
+                <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-4">
+                  {games.slice(0, 6).map((game, index) => (
+                    <div key={game.id} className="flex-shrink-0 w-80">
+                      <GameCard
+                        id={game.id}
+                        title={game.title}
+                        description={game.description || ""}
+                        platforms={["Web"]}
+                        image={game.thumbnail_url || `https://images.unsplash.com/photo-${['1511512578047-dfb367046420', '1538481199705-c710c4e965fc', '1579566346927-c68383817a25'][index % 3]}?w=800&auto=format&fit=crop`}
+                        rank={index + 1}
+                      />
+                    </div>
                   ))}
                 </div>
               )}
+            </section>
+
+            {/* NFTs Section */}
+            <section>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-3xl font-bold text-foreground">Featured NFTs</h2>
+                <ChevronRight className="h-6 w-6 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+              </div>
+              <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-4">
+                {[1, 2, 3, 4, 5].map((nft) => (
+                  <div key={nft} className="flex-shrink-0 w-64 bg-glass/20 backdrop-blur-xl border-2 border-glass-border/20 rounded-xl p-4 hover:bg-glass/30 transition-all">
+                    <div className="aspect-square bg-gradient-to-br from-accent/30 to-neon-cyan/30 rounded-lg mb-3" />
+                    <h3 className="font-bold text-foreground mb-1">NFT #{nft}</h3>
+                    <p className="text-sm text-muted-foreground">Collectible asset</p>
+                  </div>
+                ))}
+              </div>
             </section>
 
             {/* Top Players Section */}
