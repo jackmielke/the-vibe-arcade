@@ -120,13 +120,16 @@ export const SubmitGameDialog = () => {
 
     setIsLoading(true);
     try {
+      // Get current user session
+      const { data: { session } } = await supabase.auth.getSession();
+      
       const { data, error } = await supabase.from('games').insert({
         play_url: playUrl,
         title,
         description: description || null,
         thumbnail_url: thumbnailUrl || null,
         codebase_url: codebaseUrl || null,
-        creator_id: null, // Anonymous submission
+        creator_id: session?.user?.id || null,
         status: 'pending'
       }).select().single();
 
