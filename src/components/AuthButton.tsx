@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -8,39 +10,60 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LogOut, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useQuery } from "@tanstack/react-query";
+import { Session } from "@supabase/supabase-js";
 
 export const AuthButton = () => {
-  const { data: session } = useQuery({
-    queryKey: ['session'],
-    queryFn: async () => {
-      const { data } = await supabase.auth.getSession();
-      return data.session;
-    },
-  });
+  const navigate = useNavigate();
+  const [session, setSession] = useState<Session | null>(null);
+  const [profile, setProfile] = useState<any>(null);
 
-  const { data: profile } = useQuery({
-    queryKey: ['profile', session?.user?.id],
-    enabled: !!session?.user?.id,
-    queryFn: async () => {
-      const { data } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', session!.user.id)
-        .single();
-      return data;
-    },
-  });
+  useEffect(() => {
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setSession(session);
+        
+        // Fetch profile when user logs in
+        if (session?.user) {
+          setTimeout(() => {
+            supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', session.user.id)
+              .single()
+              .then(({ data }) => setProfile(data));
+          }, 0);
+        } else {
+          setProfile(null);
+        }
+      }
+    );
+
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      
+      if (session?.user) {
+        supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .single()
+          .then(({ data }) => setProfile(data));
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    window.location.reload();
   };
 
   if (!session) {
     return (
-      <Button variant="glass" size="sm" onClick={() => window.location.href = '/auth'}>
-        Connect Wallet
+      <Button variant="glass" size="sm" onClick={() => navigate('/auth')}>
+        Login
       </Button>
     );
   }
@@ -57,8 +80,8 @@ export const AuthButton = () => {
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56 bg-glass/95 backdrop-blur-xl border-glass-border/30">
-        <DropdownMenuItem className="cursor-pointer">
+      <DropdownMenuContent align="end" className="w-56 bg-card/95 backdrop-blur-xl border-border">
+        <DropdownMenuItem className="cursor-pointer" onClick={() => navigate('/profile')}>
           <User className="mr-2 h-4 w-4" />
           <span>Profile</span>
         </DropdownMenuItem>
