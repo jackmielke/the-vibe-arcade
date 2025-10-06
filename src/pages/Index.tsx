@@ -74,10 +74,10 @@ const Index = () => {
               </div>
               
               <h2 className="text-3xl md:text-4xl font-black text-primary mb-3 tracking-tight">
-                PLAY & CREATE
+                PLAY & BUILD
               </h2>
               <p className="text-base md:text-lg text-foreground/80 mb-6">
-                Play and create open-source games where people can remix, own their assets, and vibe.
+                Powered by creators. Owned by players.
               </p>
 
               <SubmitGameDialog />
