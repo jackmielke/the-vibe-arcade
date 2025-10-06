@@ -100,6 +100,7 @@ const Index = () => {
                   {games.map((game, index) => (
                     <GameCard
                       key={game.id}
+                      id={game.id}
                       title={game.title}
                       description={game.description || ""}
                       platforms={["Web"]}

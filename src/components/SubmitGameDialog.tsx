@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export const SubmitGameDialog = () => {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isFetchingMetadata, setIsFetchingMetadata] = useState(false);
@@ -118,7 +120,7 @@ export const SubmitGameDialog = () => {
 
     setIsLoading(true);
     try {
-      const { error } = await supabase.from('games').insert({
+      const { data, error } = await supabase.from('games').insert({
         play_url: playUrl,
         title,
         description: description || null,
@@ -126,7 +128,7 @@ export const SubmitGameDialog = () => {
         codebase_url: codebaseUrl || null,
         creator_id: null, // Anonymous submission
         status: 'pending'
-      });
+      }).select().single();
 
       if (error) throw error;
 
@@ -139,6 +141,11 @@ export const SubmitGameDialog = () => {
       setThumbnailUrl("");
       setCodebaseUrl("");
       setOpen(false);
+
+      // Navigate to the game page
+      if (data) {
+        navigate(`/game/${data.id}`);
+      }
     } catch (error) {
       console.error('Error submitting game:', error);
       toast.error("Failed to submit game. Please try again.");

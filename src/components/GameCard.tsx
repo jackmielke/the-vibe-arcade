@@ -1,6 +1,8 @@
 import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
 
 interface GameCardProps {
+  id: string;
   title: string;
   description: string;
   platforms: string[];
@@ -8,9 +10,14 @@ interface GameCardProps {
   rank?: number;
 }
 
-export const GameCard = ({ title, description, platforms, image, rank }: GameCardProps) => {
+export const GameCard = ({ id, title, description, platforms, image, rank }: GameCardProps) => {
+  const navigate = useNavigate();
+
   return (
-    <div className="bg-glass/20 backdrop-blur-xl border-2 border-glass-border/20 rounded-xl overflow-hidden hover:bg-glass/30 hover:scale-[1.02] transition-all duration-300 shadow-[var(--glass-glow)] hover:shadow-[var(--glass-intense)] group cursor-pointer">
+    <div 
+      className="bg-glass/20 backdrop-blur-xl border-2 border-glass-border/20 rounded-xl overflow-hidden hover:bg-glass/30 hover:scale-[1.02] transition-all duration-300 shadow-[var(--glass-glow)] hover:shadow-[var(--glass-intense)] group cursor-pointer"
+      onClick={() => navigate(`/game/${id}`)}
+    >
       <div className="aspect-video bg-gradient-to-br from-accent/20 to-neon-cyan/20 relative overflow-hidden">
         <img 
           src={image} 
