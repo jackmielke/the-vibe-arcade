@@ -23,7 +23,7 @@ export const CategoryPills = () => {
 
   return (
     <div className="flex items-center gap-3 mb-8">
-      <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 flex-1">
+      <div className="flex items-center gap-3 overflow-x-auto scrollbar-hide pb-2 flex-1">
         <Button
           variant={selectedCategory === null ? "arcade" : "glass"}
           size="lg"
@@ -48,7 +48,7 @@ export const CategoryPills = () => {
       {categories.length > 5 && (
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="outline" size="lg" className="rounded-full px-4 gap-2 whitespace-nowrap">
+            <Button variant="glass" size="lg" className="rounded-full px-6 gap-2 whitespace-nowrap flex-shrink-0">
               View All
               <ChevronRight className="h-4 w-4" />
             </Button>
