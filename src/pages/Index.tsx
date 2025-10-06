@@ -7,33 +7,8 @@ import { PlayerAvatar } from "@/components/PlayerAvatar";
 import { NFTSidebar } from "@/components/NFTSidebar";
 import { ChevronRight } from "lucide-react";
 import galaxyBg from "@/assets/galaxy-bg.jpg";
-import gameLoot from "@/assets/game-loot.png";
-import gameSlice from "@/assets/game-slice.png";
-import gameRun from "@/assets/game-run.png";
-
-const games = [
-  {
-    title: "Loot and Hunger",
-    description: "Fill your pockets with loot and snacks!",
-    platforms: ["Web", "Mobile"],
-    image: gameLoot,
-    rank: 1,
-  },
-  {
-    title: "Slice Master",
-    description: "Cut to feed!",
-    platforms: ["Web"],
-    image: gameSlice,
-    rank: 2,
-  },
-  {
-    title: "Run 3",
-    description: "Run, jump and defy gravity!",
-    platforms: ["Web"],
-    image: gameRun,
-    rank: 3,
-  },
-];
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const players = [
   { name: "Alex", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=player1" },
@@ -43,6 +18,27 @@ const players = [
 ];
 
 const Index = () => {
+  const { data: games = [], isLoading } = useQuery({
+    queryKey: ['games'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('games')
+        .select(`
+          id,
+          title,
+          description,
+          thumbnail_url,
+          play_url,
+          status
+        `)
+        .eq('status', 'approved')
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      return data || [];
+    },
+  });
+
   return (
     <div className="min-h-screen relative">
       {/* Galaxy Background */}
@@ -97,11 +93,24 @@ const Index = () => {
                 <h2 className="text-4xl font-bold text-foreground">Top Games</h2>
                 <ChevronRight className="h-8 w-8 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {games.map((game) => (
-                  <GameCard key={game.title} {...game} />
-                ))}
-              </div>
+              {isLoading ? (
+                <div className="text-center py-12 text-muted-foreground">Loading games...</div>
+              ) : games.length === 0 ? (
+                <div className="text-center py-12 text-muted-foreground">No games available yet.</div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {games.map((game, index) => (
+                    <GameCard
+                      key={game.id}
+                      title={game.title}
+                      description={game.description || "No description"}
+                      platforms={["Web"]}
+                      image={game.thumbnail_url || "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800"}
+                      rank={index + 1}
+                    />
+                  ))}
+                </div>
+              )}
             </section>
 
             {/* Top Players Section */}
