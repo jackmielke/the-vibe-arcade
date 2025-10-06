@@ -10,7 +10,7 @@ interface GameCardProps {
 
 export const GameCard = ({ title, description, platforms, image, rank }: GameCardProps) => {
   return (
-    <div className="bg-glass/10 backdrop-blur-md border border-glass-border/20 rounded-2xl overflow-hidden hover:bg-glass/20 hover:scale-105 transition-all duration-300 shadow-glow group">
+    <div className="bg-glass/20 backdrop-blur-xl border-2 border-glass-border/20 rounded-2xl overflow-hidden hover:bg-glass/30 hover:scale-105 transition-all duration-300 shadow-[var(--glass-glow)] hover:shadow-[var(--glass-intense)] group">
       <div className="aspect-video bg-gradient-to-br from-accent/20 to-neon-cyan/20 relative overflow-hidden">
         <img 
           src={image} 

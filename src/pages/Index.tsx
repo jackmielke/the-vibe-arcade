@@ -1,5 +1,5 @@
 import { Header } from "@/components/Header";
-import { Hero } from "@/components/Hero";
+import { Button } from "@/components/ui/button";
 import { VibePriceCard } from "@/components/VibePriceCard";
 import { CategoryPills } from "@/components/CategoryPills";
 import { GameCard } from "@/components/GameCard";
@@ -64,15 +64,31 @@ const Index = () => {
         <NFTSidebar />
         
         <main className="lg:pr-48">
-          <Hero />
+          <section className="pt-32 pb-12 px-4 md:px-6">
+            <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-start justify-between gap-8">
+              <div className="flex-1">
+                <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-primary mb-4 tracking-tight">
+                  THE VIBE
+                  <br />
+                  ARCADE
+                </h1>
+                <p className="text-xl md:text-2xl text-foreground/80 mb-8 max-w-2xl">
+                  An open-source gaming platform where anyone can play and create their own games
+                </p>
+                <Button variant="arcade" size="lg" className="text-lg px-8 py-6 h-auto">
+                  ENTER THE ARCADE
+                </Button>
+              </div>
+              <div className="lg:pt-8">
+                <VibePriceCard />
+              </div>
+            </div>
+          </section>
 
           <div className="max-w-7xl mx-auto px-4 md:px-6 space-y-12 pb-16">
-            {/* Price Card and Categories */}
-            <div className="flex flex-col md:flex-row gap-6 items-start">
-              <VibePriceCard />
-              <div className="flex-1">
-                <CategoryPills />
-              </div>
+            {/* Categories */}
+            <div>
+              <CategoryPills />
             </div>
 
             {/* Top Games Section */}
