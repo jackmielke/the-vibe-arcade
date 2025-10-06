@@ -56,15 +56,17 @@ export const GameComments = ({ gameId }: GameCommentsProps) => {
 
       if (error) throw error;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['comments', gameId] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['comments', gameId] });
+      await queryClient.refetchQueries({ queryKey: ['comments', gameId] });
       setNewComment("");
       toast({
         title: "Comment added",
         description: "Your comment has been posted",
       });
     },
-    onError: () => {
+    onError: (error) => {
+      console.error('Comment creation error:', error);
       toast({
         title: "Error",
         description: "Failed to post comment",
@@ -82,14 +84,16 @@ export const GameComments = ({ gameId }: GameCommentsProps) => {
 
       if (error) throw error;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['comments', gameId] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['comments', gameId] });
+      await queryClient.refetchQueries({ queryKey: ['comments', gameId] });
       toast({
         title: "Comment deleted",
         description: "Your comment has been removed",
       });
     },
-    onError: () => {
+    onError: (error) => {
+      console.error('Comment deletion error:', error);
       toast({
         title: "Error",
         description: "Failed to delete comment",
