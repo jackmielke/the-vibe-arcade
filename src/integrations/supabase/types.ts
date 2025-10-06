@@ -157,6 +157,7 @@ export type Database = {
           description: string | null
           host_type: Database["public"]["Enums"]["host_type"]
           id: string
+          is_anonymous: boolean
           play_url: string
           price_usd: number | null
           published_at: string | null
@@ -173,6 +174,7 @@ export type Database = {
           description?: string | null
           host_type?: Database["public"]["Enums"]["host_type"]
           id?: string
+          is_anonymous?: boolean
           play_url: string
           price_usd?: number | null
           published_at?: string | null
@@ -189,6 +191,7 @@ export type Database = {
           description?: string | null
           host_type?: Database["public"]["Enums"]["host_type"]
           id?: string
+          is_anonymous?: boolean
           play_url?: string
           price_usd?: number | null
           published_at?: string | null

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import { Plus, Loader2, Upload, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -22,6 +23,7 @@ export const SubmitGameDialog = () => {
   const [description, setDescription] = useState("");
   const [thumbnailUrl, setThumbnailUrl] = useState("");
   const [codebaseUrl, setCodebaseUrl] = useState("");
+  const [isAnonymous, setIsAnonymous] = useState(false);
 
   // Auto-fetch metadata when URL is pasted or changed
   useEffect(() => {
@@ -130,6 +132,7 @@ export const SubmitGameDialog = () => {
         thumbnail_url: thumbnailUrl || null,
         codebase_url: codebaseUrl || null,
         creator_id: session?.user?.id || null,
+        is_anonymous: isAnonymous,
         status: 'pending'
       }).select().single();
 
@@ -143,6 +146,7 @@ export const SubmitGameDialog = () => {
       setDescription("");
       setThumbnailUrl("");
       setCodebaseUrl("");
+      setIsAnonymous(false);
       setOpen(false);
 
       // Navigate to the game page
@@ -278,6 +282,20 @@ export const SubmitGameDialog = () => {
             <p className="text-sm text-muted-foreground">
               Share your code so others can contribute and remix this project!
             </p>
+          </div>
+
+          <div className="flex items-center justify-between space-x-2 p-4 bg-glass/10 rounded-lg border border-glass-border/20">
+            <div className="space-y-0.5">
+              <Label htmlFor="anonymous" className="text-base">Submit anonymously</Label>
+              <p className="text-sm text-muted-foreground">
+                Your profile won't be shown on this game
+              </p>
+            </div>
+            <Switch
+              id="anonymous"
+              checked={isAnonymous}
+              onCheckedChange={setIsAnonymous}
+            />
           </div>
 
           <div className="flex justify-end gap-2">
