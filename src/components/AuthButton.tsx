@@ -39,8 +39,8 @@ export const AuthButton = () => {
 
   if (!session) {
     return (
-      <Button variant="glass" size="sm">
-        Sign In
+      <Button variant="glass" size="sm" onClick={() => window.location.href = '/auth'}>
+        Connect Wallet
       </Button>
     );
   }

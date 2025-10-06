@@ -1,1 +1,4 @@
 project_id = "eafphwepdowwzpeoihth"
+
+[functions.metamask-auth]
+verify_jwt = false
