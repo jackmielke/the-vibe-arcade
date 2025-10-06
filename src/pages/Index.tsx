@@ -70,8 +70,9 @@ const Index = () => {
         <NFTSidebar />
         
         <main className="lg:pr-48">
-          <section className="pt-24 pb-8 px-4 md:px-6">
-            <div className="max-w-md space-y-6">
+          <section className="pt-24 pb-8">
+            <div className="max-w-7xl mx-auto px-4 md:px-6">
+              <div className="max-w-md space-y-6">
               <div className="flex items-center justify-start mb-6">
                 <VibePriceCard />
               </div>
@@ -84,6 +85,7 @@ const Index = () => {
               </p>
 
               <SubmitGameDialog />
+              </div>
             </div>
           </section>
 
