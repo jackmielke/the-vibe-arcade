@@ -39,6 +39,10 @@ const Index = () => {
     },
   });
 
+  const scrollToGames = () => {
+    document.getElementById('games-section')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <div className="min-h-screen relative">
       {/* Galaxy Background */}
@@ -60,28 +64,30 @@ const Index = () => {
         <NFTSidebar />
         
         <main className="lg:pr-48">
-          <section className="pt-32 pb-12 px-4 md:px-6">
-            <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-start justify-between gap-8">
-              <div className="flex-1">
-                <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-primary mb-4 tracking-tight">
-                  THE VIBE
-                  <br />
-                  ARCADE
-                </h1>
-                <p className="text-xl md:text-2xl text-foreground/80 mb-8 max-w-2xl">
-                  An open-source gaming platform where anyone can play and create their own games
-                </p>
-                <Button variant="arcade" size="lg" className="text-lg px-8 py-6 h-auto">
-                  ENTER THE ARCADE
-                </Button>
-              </div>
-              <div className="lg:pt-8">
+          <section className="pt-24 pb-8 px-4 md:px-6">
+            <div className="max-w-7xl mx-auto">
+              <div className="flex items-center justify-between mb-6">
                 <VibePriceCard />
               </div>
+              
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-primary mb-3 tracking-tight">
+                THE VIBE ARCADE
+              </h1>
+              <p className="text-lg md:text-xl text-foreground/80 mb-6 max-w-2xl">
+                Play and create open-source games
+              </p>
+              <Button 
+                variant="arcade" 
+                size="lg" 
+                onClick={scrollToGames}
+                className="text-base px-6 py-5 h-auto"
+              >
+                EXPLORE GAMES
+              </Button>
             </div>
           </section>
 
-          <div className="max-w-7xl mx-auto px-4 md:px-6 space-y-12 pb-16">
+          <div className="max-w-7xl mx-auto px-4 md:px-6 space-y-8 pb-16" id="games-section">
             {/* Categories */}
             <div>
               <CategoryPills />
@@ -89,23 +95,23 @@ const Index = () => {
 
             {/* Top Games Section */}
             <section>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-4xl font-bold text-foreground">Top Games</h2>
-                <ChevronRight className="h-8 w-8 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-3xl font-bold text-foreground">Top Games</h2>
+                <ChevronRight className="h-6 w-6 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
               </div>
               {isLoading ? (
-                <div className="text-center py-12 text-muted-foreground">Loading games...</div>
+                <div className="text-center py-8 text-muted-foreground">Loading...</div>
               ) : games.length === 0 ? (
-                <div className="text-center py-12 text-muted-foreground">No games available yet.</div>
+                <div className="text-center py-8 text-muted-foreground">No games yet</div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {games.map((game, index) => (
                     <GameCard
                       key={game.id}
                       title={game.title}
-                      description={game.description || "No description"}
+                      description={game.description || ""}
                       platforms={["Web"]}
-                      image={game.thumbnail_url || "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800"}
+                      image={game.thumbnail_url || `https://images.unsplash.com/photo-${['1511512578047-dfb367046420', '1538481199705-c710c4e965fc', '1579566346927-c68383817a25'][index % 3]}?w=800&auto=format&fit=crop`}
                       rank={index + 1}
                     />
                   ))}
@@ -115,11 +121,11 @@ const Index = () => {
 
             {/* Top Players Section */}
             <section>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-4xl font-bold text-foreground">Top Players</h2>
-                <ChevronRight className="h-8 w-8 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-3xl font-bold text-foreground">Top Players</h2>
+                <ChevronRight className="h-6 w-6 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
               </div>
-              <div className="flex gap-8 overflow-x-auto pb-4">
+              <div className="flex gap-6 overflow-x-auto pb-4">
                 {players.map((player) => (
                   <PlayerAvatar key={player.name} {...player} />
                 ))}
