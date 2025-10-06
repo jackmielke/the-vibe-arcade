@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Camera, Loader2 } from "lucide-react";
+import { Camera, Loader2, Wallet } from "lucide-react";
 import { toast } from "sonner";
 import galaxyBg from "@/assets/galaxy-bg.jpg";
 
@@ -22,6 +22,7 @@ export default function Profile() {
   const [userGames, setUserGames] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const [isConnectingWallet, setIsConnectingWallet] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
     display_name: "",
@@ -154,6 +155,38 @@ export default function Profile() {
     setIsLoading(false);
   };
 
+  const handleConnectWallet = async () => {
+    if (!session) return;
+
+    setIsConnectingWallet(true);
+    try {
+      if (!window.ethereum) {
+        toast.error("Please install MetaMask to connect your wallet");
+        return;
+      }
+
+      const accounts = await window.ethereum.request({ 
+        method: 'eth_requestAccounts' 
+      });
+      const walletAddress = accounts[0];
+
+      const { error } = await supabase
+        .from("profiles")
+        .update({ wallet_address: walletAddress })
+        .eq("id", session.user.id);
+
+      if (error) throw error;
+
+      toast.success("Ethereum wallet connected successfully!");
+      fetchProfile(session.user.id);
+    } catch (error) {
+      console.error("Error connecting wallet:", error);
+      toast.error("Failed to connect wallet");
+    } finally {
+      setIsConnectingWallet(false);
+    }
+  };
+
   const getInitials = () => {
     if (profile?.username) {
       return profile.username[0].toUpperCase();
@@ -269,6 +302,59 @@ export default function Profile() {
                   {isLoading ? "Updating..." : "Update Profile"}
                 </Button>
               </form>
+            </CardContent>
+          </Card>
+
+          {/* Ethereum Wallet Connection */}
+          <Card className="bg-glass/95 backdrop-blur-xl border-glass-border/30">
+            <CardHeader>
+              <CardTitle className="text-xl flex items-center gap-2">
+                <Wallet className="h-5 w-5" />
+                Ethereum Wallet
+              </CardTitle>
+              <CardDescription>
+                Connect your Ethereum wallet to truly own your assets. You're not locked into this platform or any platform—it's your true wallet on the internet.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {profile?.wallet_address ? (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-4 bg-glass/10 border border-glass-border/20 rounded-lg">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Connected Wallet</p>
+                      <p className="font-mono text-sm mt-1">
+                        {profile.wallet_address.slice(0, 6)}...{profile.wallet_address.slice(-4)}
+                      </p>
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={handleConnectWallet}
+                      disabled={isConnectingWallet}
+                    >
+                      {isConnectingWallet ? "Connecting..." : "Change Wallet"}
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <Button 
+                  onClick={handleConnectWallet}
+                  disabled={isConnectingWallet}
+                  className="w-full"
+                >
+                  {isConnectingWallet ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Connecting...
+                    </>
+                  ) : (
+                    <>
+                      <Wallet className="mr-2 h-4 w-4" />
+                      Connect Ethereum Wallet
+                    </>
+                  )}
+                </Button>
+              )}
             </CardContent>
           </Card>
 
