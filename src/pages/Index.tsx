@@ -1,4 +1,5 @@
 import { Header } from "@/components/Header";
+import { SubmitGameDialog } from "@/components/SubmitGameDialog";
 import { Button } from "@/components/ui/button";
 import { VibePriceCard } from "@/components/VibePriceCard";
 import { CategoryPills } from "@/components/CategoryPills";
@@ -65,7 +66,7 @@ const Index = () => {
         
         <main className="lg:pr-48">
           <section className="pt-24 pb-8 px-4 md:px-6">
-            <div className="max-w-md">
+            <div className="max-w-md space-y-6">
               <div className="flex items-center justify-start mb-6">
                 <VibePriceCard />
               </div>
@@ -73,9 +74,11 @@ const Index = () => {
               <h2 className="text-3xl md:text-4xl font-black text-primary mb-3 tracking-tight">
                 PLAY & CREATE
               </h2>
-              <p className="text-base md:text-lg text-foreground/80">
+              <p className="text-base md:text-lg text-foreground/80 mb-6">
                 Play and create open-source games where people can remix, own their assets, and vibe.
               </p>
+
+              <SubmitGameDialog />
             </div>
           </section>
 

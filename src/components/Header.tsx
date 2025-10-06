@@ -1,7 +1,6 @@
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { AuthButton } from "@/components/AuthButton";
-import { SubmitGameDialog } from "@/components/SubmitGameDialog";
 import vibeLogo from "@/assets/vibe-logo-white.png";
 
 export const Header = () => {
@@ -23,7 +22,6 @@ export const Header = () => {
         </div>
         
         <div className="flex items-center gap-3">
-          <SubmitGameDialog />
           <AuthButton />
         </div>
       </div>
