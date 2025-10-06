@@ -16,7 +16,20 @@ export const CategoryPills = () => {
         .order('name');
       
       if (error) throw error;
-      return data || [];
+      
+      // Sort categories with Mobile, Web, VR first, then rest alphabetically
+      const priorityOrder = ['mobile', 'web', 'vr'];
+      const sorted = (data || []).sort((a, b) => {
+        const aIndex = priorityOrder.indexOf(a.slug);
+        const bIndex = priorityOrder.indexOf(b.slug);
+        
+        if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
+        if (aIndex !== -1) return -1;
+        if (bIndex !== -1) return 1;
+        return a.name.localeCompare(b.name);
+      });
+      
+      return sorted;
     },
   });
 
