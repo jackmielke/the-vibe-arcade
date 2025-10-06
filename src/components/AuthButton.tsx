@@ -82,9 +82,9 @@ export const AuthButton = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-10 w-10 rounded-full p-0">
-          <Avatar className="h-10 w-10 border-2 border-glass-border/30">
+          <Avatar className="h-10 w-10 border border-foreground/20">
             <AvatarImage src={profile?.avatar_url || ""} alt={profile?.username || session?.user?.email || "User"} />
-            <AvatarFallback className="bg-cosmic-gradient text-foreground font-bold">
+            <AvatarFallback className="bg-foreground/10 text-foreground font-bold">
               {getInitials()}
             </AvatarFallback>
           </Avatar>
