@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
+import { LikeButton } from "@/components/LikeButton";
 
 interface GameCardProps {
   id: string;
@@ -32,13 +33,16 @@ export const GameCard = ({ id, title, description, platforms, image, rank }: Gam
       </div>
       <div className="p-4">
         <h3 className="text-xl font-bold text-foreground mb-1 line-clamp-1">{title}</h3>
-        <p className="text-sm text-muted-foreground line-clamp-2 mb-2">{description}</p>
-        <div className="flex gap-2">
-          {platforms.map((platform) => (
-            <Badge key={platform} variant="secondary" className="bg-muted/50 text-xs">
-              {platform}
-            </Badge>
-          ))}
+        <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{description}</p>
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex gap-2">
+            {platforms.map((platform) => (
+              <Badge key={platform} variant="secondary" className="bg-muted/50 text-xs">
+                {platform}
+              </Badge>
+            ))}
+          </div>
+          <LikeButton gameId={id} />
         </div>
       </div>
     </div>

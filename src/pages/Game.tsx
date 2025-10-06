@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { ArrowLeft, ExternalLink, Code } from "lucide-react";
 import galaxyBg from "@/assets/galaxy-bg.jpg";
+import { LikeButton } from "@/components/LikeButton";
+import { GameComments } from "@/components/GameComments";
 
 const Game = () => {
   const { id } = useParams();
@@ -109,28 +111,31 @@ const Game = () => {
                 ))}
               </div>
 
-              <div className="flex gap-3">
-                <Button 
-                  variant="arcade" 
-                  size="lg"
-                  className="gap-2"
-                  onClick={() => window.open(game.play_url, '_blank')}
-                >
-                  <ExternalLink className="h-4 w-4" />
-                  Launch Full Game
-                </Button>
-                
-                {game.codebase_url && (
+              <div className="flex items-center gap-4">
+                <div className="flex gap-3">
                   <Button 
-                    variant="glass" 
+                    variant="arcade" 
                     size="lg"
                     className="gap-2"
-                    onClick={() => window.open(game.codebase_url, '_blank')}
+                    onClick={() => window.open(game.play_url, '_blank')}
                   >
-                    <Code className="h-4 w-4" />
-                    View Code
+                    <ExternalLink className="h-4 w-4" />
+                    Launch Full Game
                   </Button>
-                )}
+                  
+                  {game.codebase_url && (
+                    <Button 
+                      variant="glass" 
+                      size="lg"
+                      className="gap-2"
+                      onClick={() => window.open(game.codebase_url, '_blank')}
+                    >
+                      <Code className="h-4 w-4" />
+                      View Code
+                    </Button>
+                  )}
+                </div>
+                <LikeButton gameId={game.id} showCount={true} />
               </div>
             </div>
 
@@ -161,6 +166,11 @@ const Game = () => {
                 <ResizablePanel defaultSize={0} minSize={0} maxSize={0} />
               </ResizablePanelGroup>
             )}
+
+            {/* Comments Section */}
+            <div className="mt-12">
+              <GameComments gameId={game.id} />
+            </div>
           </div>
         </main>
       </div>
