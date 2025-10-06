@@ -17,7 +17,10 @@ const Arcade = () => {
           description,
           thumbnail_url,
           play_url,
-          status
+          status,
+          is_anonymous,
+          creator_id,
+          profiles(username, avatar_url)
         `)
         .eq('status', 'approved')
         .order('created_at', { ascending: false });
@@ -72,6 +75,8 @@ const Arcade = () => {
                   description={game.description || ""}
                   platforms={["Web"]}
                   image={game.thumbnail_url || `https://images.unsplash.com/photo-${['1511512578047-dfb367046420', '1538481199705-c710c4e965fc', '1579566346927-c68383817a25'][index % 3]}?w=800&auto=format&fit=crop`}
+                  creatorProfile={game.profiles}
+                  isAnonymous={game.is_anonymous}
                 />
               ))}
             </div>

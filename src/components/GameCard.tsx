@@ -9,9 +9,14 @@ interface GameCardProps {
   platforms: string[];
   image: string;
   rank?: number;
+  creatorProfile?: {
+    username: string;
+    avatar_url: string;
+  } | null;
+  isAnonymous?: boolean;
 }
 
-export const GameCard = ({ id, title, description, platforms, image, rank }: GameCardProps) => {
+export const GameCard = ({ id, title, description, platforms, image, rank, creatorProfile, isAnonymous }: GameCardProps) => {
   const navigate = useNavigate();
 
   return (
@@ -31,9 +36,12 @@ export const GameCard = ({ id, title, description, platforms, image, rank }: Gam
           </span>
         )}
       </div>
-      <div className="p-4">
-        <h3 className="text-xl font-bold text-foreground mb-1 line-clamp-1">{title}</h3>
-        <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{description}</p>
+      <div className="p-4 space-y-3">
+        <div>
+          <h3 className="text-xl font-bold text-foreground mb-1 line-clamp-1">{title}</h3>
+          <p className="text-sm text-muted-foreground line-clamp-2">{description}</p>
+        </div>
+        
         <div className="flex items-center justify-between gap-2">
           <div className="flex gap-2">
             {platforms.map((platform) => (
@@ -44,6 +52,17 @@ export const GameCard = ({ id, title, description, platforms, image, rank }: Gam
           </div>
           <LikeButton gameId={id} />
         </div>
+
+        {!isAnonymous && creatorProfile && (
+          <div className="flex items-center gap-2 pt-2 border-t border-glass-border/10">
+            <img 
+              src={creatorProfile.avatar_url} 
+              alt={creatorProfile.username}
+              className="w-6 h-6 rounded-full"
+            />
+            <span className="text-xs text-muted-foreground">by {creatorProfile.username}</span>
+          </div>
+        )}
       </div>
     </div>
   );
