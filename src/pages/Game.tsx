@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { ArrowLeft, ExternalLink, Code } from "lucide-react";
 import galaxyBg from "@/assets/galaxy-bg.jpg";
 
@@ -116,7 +117,7 @@ const Game = () => {
                   onClick={() => window.open(game.play_url, '_blank')}
                 >
                   <ExternalLink className="h-4 w-4" />
-                  Play Game
+                  Launch Full Game
                 </Button>
                 
                 {game.codebase_url && (
@@ -146,15 +147,19 @@ const Game = () => {
 
             {/* Game Embed (if iframe) */}
             {game.host_type === 'iframe' && (
-              <div className="aspect-video bg-glass/20 backdrop-blur-xl border-2 border-glass-border/20 rounded-xl overflow-hidden">
-                <iframe
-                  src={game.play_url}
-                  className="w-full h-full"
-                  title={game.title}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              </div>
+              <ResizablePanelGroup direction="vertical" className="min-h-[400px] bg-glass/20 backdrop-blur-xl border-2 border-glass-border/20 rounded-xl overflow-hidden">
+                <ResizablePanel defaultSize={100} minSize={30}>
+                  <iframe
+                    src={game.play_url}
+                    className="w-full h-full"
+                    title={game.title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </ResizablePanel>
+                <ResizableHandle />
+                <ResizablePanel defaultSize={0} minSize={0} maxSize={0} />
+              </ResizablePanelGroup>
             )}
           </div>
         </main>
