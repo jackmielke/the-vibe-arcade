@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { LikeButton } from "@/components/LikeButton";
+import { CommentCount } from "@/components/CommentCount";
 
 interface GameCardProps {
   id: string;
@@ -50,7 +51,10 @@ export const GameCard = ({ id, title, description, platforms, image, rank, creat
               </Badge>
             ))}
           </div>
-          <LikeButton gameId={id} />
+          <div className="flex items-center gap-1">
+            <LikeButton gameId={id} />
+            <CommentCount gameId={id} />
+          </div>
         </div>
 
         {!isAnonymous && creatorProfile && (
