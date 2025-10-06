@@ -1,7 +1,7 @@
-import { Search, Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { AuthButton } from "@/components/AuthButton";
+import { SubmitGameDialog } from "@/components/SubmitGameDialog";
 import vibeLogo from "@/assets/vibe-logo-white.png";
 
 export const Header = () => {
@@ -20,10 +20,7 @@ export const Header = () => {
         </div>
         
         <div className="flex items-center gap-3">
-          <Button variant="glass" size="sm" className="gap-2">
-            <Plus className="h-4 w-4" />
-            <span className="hidden sm:inline">Submit</span>
-          </Button>
+          <SubmitGameDialog />
           <AuthButton />
         </div>
       </div>

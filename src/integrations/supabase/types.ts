@@ -116,6 +116,7 @@ export type Database = {
       games: {
         Row: {
           aspect_ratio: Database["public"]["Enums"]["aspect_ratio"]
+          codebase_url: string | null
           created_at: string
           creator_id: string | null
           description: string | null
@@ -131,6 +132,7 @@ export type Database = {
         }
         Insert: {
           aspect_ratio?: Database["public"]["Enums"]["aspect_ratio"]
+          codebase_url?: string | null
           created_at?: string
           creator_id?: string | null
           description?: string | null
@@ -146,6 +148,7 @@ export type Database = {
         }
         Update: {
           aspect_ratio?: Database["public"]["Enums"]["aspect_ratio"]
+          codebase_url?: string | null
           created_at?: string
           creator_id?: string | null
           description?: string | null
