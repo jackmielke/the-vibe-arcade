@@ -117,7 +117,7 @@ export type Database = {
         Row: {
           aspect_ratio: Database["public"]["Enums"]["aspect_ratio"]
           created_at: string
-          creator_id: string
+          creator_id: string | null
           description: string | null
           host_type: Database["public"]["Enums"]["host_type"]
           id: string
@@ -132,7 +132,7 @@ export type Database = {
         Insert: {
           aspect_ratio?: Database["public"]["Enums"]["aspect_ratio"]
           created_at?: string
-          creator_id: string
+          creator_id?: string | null
           description?: string | null
           host_type?: Database["public"]["Enums"]["host_type"]
           id?: string
@@ -147,7 +147,7 @@ export type Database = {
         Update: {
           aspect_ratio?: Database["public"]["Enums"]["aspect_ratio"]
           created_at?: string
-          creator_id?: string
+          creator_id?: string | null
           description?: string | null
           host_type?: Database["public"]["Enums"]["host_type"]
           id?: string
