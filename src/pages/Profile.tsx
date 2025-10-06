@@ -99,18 +99,17 @@ export default function Profile() {
     setIsUploadingAvatar(true);
     try {
       const fileExt = file.name.split(".").pop();
-      const fileName = `${session.user.id}-${Date.now()}.${fileExt}`;
-      const filePath = `avatars/${fileName}`;
+      const fileName = `${session.user.id}/${Date.now()}.${fileExt}`;
 
       const { error: uploadError } = await supabase.storage
-        .from("game-thumbnails")
-        .upload(filePath, file);
+        .from("avatars")
+        .upload(fileName, file);
 
       if (uploadError) throw uploadError;
 
       const { data: { publicUrl } } = supabase.storage
-        .from("game-thumbnails")
-        .getPublicUrl(filePath);
+        .from("avatars")
+        .getPublicUrl(fileName);
 
       const { error: updateError } = await supabase
         .from("profiles")
