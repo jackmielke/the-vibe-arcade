@@ -65,25 +65,17 @@ const Index = () => {
         
         <main className="lg:pr-48">
           <section className="pt-24 pb-8 px-4 md:px-6">
-            <div className="max-w-7xl mx-auto">
-              <div className="flex items-center justify-between mb-6">
+            <div className="max-w-md">
+              <div className="flex items-center justify-start mb-6">
                 <VibePriceCard />
               </div>
               
-              <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-primary mb-3 tracking-tight">
+              <h2 className="text-3xl md:text-4xl font-black text-primary mb-3 tracking-tight">
                 PLAY & CREATE
               </h2>
-              <p className="text-lg md:text-xl text-foreground/80 mb-6 max-w-2xl">
-                Play and create open-source games
+              <p className="text-base md:text-lg text-foreground/80">
+                Play and create open-source games where people can remix, own their assets, and vibe.
               </p>
-              <Button 
-                variant="arcade" 
-                size="lg" 
-                onClick={scrollToGames}
-                className="text-base px-6 py-5 h-auto"
-              >
-                EXPLORE GAMES
-              </Button>
             </div>
           </section>
 
