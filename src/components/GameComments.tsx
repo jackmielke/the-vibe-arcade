@@ -12,20 +12,31 @@ interface GameCommentsProps {
   gameId: string;
 }
 
+interface Comment {
+  id: string;
+  content: string;
+  created_at: string;
+  user_id: string;
+  profiles: {
+    username: string;
+    avatar_url: string;
+  } | null;
+}
+
 export const GameComments = ({ gameId }: GameCommentsProps) => {
   const [newComment, setNewComment] = useState("");
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    getCurrentUser();
+    checkAuth();
   }, []);
 
-  const getCurrentUser = async () => {
+  const checkAuth = async () => {
     const { data: { user } } = await supabase.auth.getUser();
-    setCurrentUser(user);
+    setCurrentUserId(user?.id || null);
   };
 
   const { data: comments = [], isLoading } = useQuery({
@@ -34,42 +45,96 @@ export const GameComments = ({ gameId }: GameCommentsProps) => {
       const { data, error } = await supabase
         .from('comments')
         .select(`
-          *,
+          id,
+          content,
+          created_at,
+          user_id,
           profiles(username, avatar_url)
         `)
         .eq('game_id', gameId)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      return data || [];
+      if (error) {
+        console.error('Error fetching comments:', error);
+        throw error;
+      }
+      return data as Comment[];
     },
   });
 
   const createCommentMutation = useMutation({
     mutationFn: async (content: string) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
+      if (!currentUserId) throw new Error('Not authenticated');
 
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('comments')
-        .insert({ game_id: gameId, user_id: user.id, content });
+        .insert({ 
+          game_id: gameId, 
+          user_id: currentUserId, 
+          content 
+        })
+        .select(`
+          id,
+          content,
+          created_at,
+          user_id,
+          profiles(username, avatar_url)
+        `)
+        .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error creating comment:', error);
+        throw error;
+      }
+      return data as Comment;
     },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['comments', gameId] });
-      await queryClient.refetchQueries({ queryKey: ['comments', gameId] });
+    onMutate: async (content) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['comments', gameId] });
+
+      // Snapshot previous value
+      const previousComments = queryClient.getQueryData<Comment[]>(['comments', gameId]);
+
+      // Optimistically update with temporary comment
+      const { data: { user } } = await supabase.auth.getUser();
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('username, avatar_url')
+        .eq('id', currentUserId!)
+        .single();
+
+      const optimisticComment: Comment = {
+        id: `temp-${Date.now()}`,
+        content,
+        created_at: new Date().toISOString(),
+        user_id: currentUserId!,
+        profiles: profile || { username: 'You', avatar_url: '' }
+      };
+
+      queryClient.setQueryData<Comment[]>(
+        ['comments', gameId],
+        (old = []) => [optimisticComment, ...old]
+      );
+
+      return { previousComments };
+    },
+    onSuccess: () => {
       setNewComment("");
+      queryClient.invalidateQueries({ queryKey: ['comments', gameId] });
       toast({
-        title: "Comment added",
-        description: "Your comment has been posted",
+        title: "Comment posted",
+        description: "Your comment has been added",
       });
     },
-    onError: (error) => {
-      console.error('Comment creation error:', error);
+    onError: (error, _, context) => {
+      // Rollback on error
+      if (context?.previousComments) {
+        queryClient.setQueryData(['comments', gameId], context.previousComments);
+      }
+      console.error('Comment mutation error:', error);
       toast({
         title: "Error",
-        description: "Failed to post comment",
+        description: "Failed to post comment. Please try again.",
         variant: "destructive",
       });
     },
@@ -82,18 +147,34 @@ export const GameComments = ({ gameId }: GameCommentsProps) => {
         .delete()
         .eq('id', commentId);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error deleting comment:', error);
+        throw error;
+      }
     },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['comments', gameId] });
-      await queryClient.refetchQueries({ queryKey: ['comments', gameId] });
+    onMutate: async (commentId) => {
+      await queryClient.cancelQueries({ queryKey: ['comments', gameId] });
+      const previousComments = queryClient.getQueryData<Comment[]>(['comments', gameId]);
+
+      // Optimistically remove comment
+      queryClient.setQueryData<Comment[]>(
+        ['comments', gameId],
+        (old = []) => old.filter(c => c.id !== commentId)
+      );
+
+      return { previousComments };
+    },
+    onSuccess: () => {
       toast({
         title: "Comment deleted",
         description: "Your comment has been removed",
       });
     },
-    onError: (error) => {
-      console.error('Comment deletion error:', error);
+    onError: (error, _, context) => {
+      if (context?.previousComments) {
+        queryClient.setQueryData(['comments', gameId], context.previousComments);
+      }
+      console.error('Delete mutation error:', error);
       toast({
         title: "Error",
         description: "Failed to delete comment",
@@ -104,7 +185,8 @@ export const GameComments = ({ gameId }: GameCommentsProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!currentUser) {
+    
+    if (!currentUserId) {
       toast({
         title: "Sign in required",
         description: "Please sign in to comment",
@@ -113,8 +195,17 @@ export const GameComments = ({ gameId }: GameCommentsProps) => {
       return;
     }
 
-    if (!newComment.trim()) return;
-    createCommentMutation.mutate(newComment);
+    const trimmedComment = newComment.trim();
+    if (!trimmedComment) {
+      toast({
+        title: "Empty comment",
+        description: "Please enter a comment",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    createCommentMutation.mutate(trimmedComment);
   };
 
   return (
@@ -126,13 +217,13 @@ export const GameComments = ({ gameId }: GameCommentsProps) => {
         <Textarea
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
-          placeholder={currentUser ? "Share your thoughts..." : "Sign in to comment"}
+          placeholder={currentUserId ? "Share your thoughts..." : "Sign in to comment"}
           className="min-h-[100px] bg-glass/10 border-glass-border/20"
-          disabled={!currentUser}
+          disabled={!currentUserId || createCommentMutation.isPending}
         />
         <Button
           type="submit"
-          disabled={!newComment.trim() || createCommentMutation.isPending}
+          disabled={!currentUserId || !newComment.trim() || createCommentMutation.isPending}
           className="w-full sm:w-auto"
         >
           {createCommentMutation.isPending ? "Posting..." : "Post Comment"}
@@ -148,7 +239,7 @@ export const GameComments = ({ gameId }: GameCommentsProps) => {
             No comments yet. Be the first to share your thoughts!
           </div>
         ) : (
-          comments.map((comment: any) => (
+          comments.map((comment) => (
             <div
               key={comment.id}
               className="bg-glass/10 backdrop-blur-xl border border-glass-border/20 rounded-lg p-4 space-y-2"
@@ -171,7 +262,7 @@ export const GameComments = ({ gameId }: GameCommentsProps) => {
                     </p>
                   </div>
                 </div>
-                {currentUser?.id === comment.user_id && (
+                {currentUserId === comment.user_id && (
                   <Button
                     variant="ghost"
                     size="sm"
