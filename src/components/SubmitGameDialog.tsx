@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,9 +21,19 @@ export const SubmitGameDialog = () => {
   const [thumbnailUrl, setThumbnailUrl] = useState("");
   const [codebaseUrl, setCodebaseUrl] = useState("");
 
+  // Auto-fetch metadata when URL is pasted or changed
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (playUrl && playUrl.startsWith('http')) {
+        fetchMetadata();
+      }
+    }, 500); // Debounce for 500ms
+
+    return () => clearTimeout(timer);
+  }, [playUrl]);
+
   const fetchMetadata = async () => {
-    if (!playUrl) {
-      toast.error("Please enter a game URL first");
+    if (!playUrl || !playUrl.startsWith('http')) {
       return;
     }
 
