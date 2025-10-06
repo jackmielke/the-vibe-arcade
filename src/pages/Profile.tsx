@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Camera, Loader2, Wallet } from "lucide-react";
 import { toast } from "sonner";
 import galaxyBg from "@/assets/galaxy-bg.jpg";
+import { ImageCropper } from "@/components/ImageCropper";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -23,6 +24,8 @@ export default function Profile() {
   const [isLoading, setIsLoading] = useState(false);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [isConnectingWallet, setIsConnectingWallet] = useState(false);
+  const [cropperImage, setCropperImage] = useState<string | null>(null);
+  const [isCropperOpen, setIsCropperOpen] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
     display_name: "",
@@ -83,9 +86,9 @@ export default function Profile() {
     }
   };
 
-  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file || !session) return;
+    if (!file) return;
 
     if (!file.type.startsWith("image/")) {
       toast.error("Please upload an image file");
@@ -97,14 +100,31 @@ export default function Profile() {
       return;
     }
 
+    const reader = new FileReader();
+    reader.onload = () => {
+      setCropperImage(reader.result as string);
+      setIsCropperOpen(true);
+    };
+    reader.readAsDataURL(file);
+    
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const handleCropComplete = async (croppedImageBlob: Blob) => {
+    if (!session) return;
+
     setIsUploadingAvatar(true);
+    setIsCropperOpen(false);
+    
     try {
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${session.user.id}/${Date.now()}.${fileExt}`;
+      const fileName = `${session.user.id}/${Date.now()}.jpg`;
 
       const { error: uploadError } = await supabase.storage
         .from("avatars")
-        .upload(fileName, file);
+        .upload(fileName, croppedImageBlob);
 
       if (uploadError) throw uploadError;
 
@@ -126,7 +146,13 @@ export default function Profile() {
       toast.error("Failed to upload avatar");
     } finally {
       setIsUploadingAvatar(false);
+      setCropperImage(null);
     }
+  };
+
+  const handleCropCancel = () => {
+    setIsCropperOpen(false);
+    setCropperImage(null);
   };
 
   const handleUpdate = async (e: React.FormEvent) => {
@@ -231,7 +257,7 @@ export default function Profile() {
                   type="file"
                   accept="image/*"
                   className="hidden"
-                  onChange={handleAvatarUpload}
+                  onChange={handleAvatarSelect}
                   disabled={isUploadingAvatar}
                 />
               </div>
@@ -389,6 +415,15 @@ export default function Profile() {
           </Card>
         </div>
       </main>
+      
+      {cropperImage && (
+        <ImageCropper
+          image={cropperImage}
+          onCropComplete={handleCropComplete}
+          onCancel={handleCropCancel}
+          isOpen={isCropperOpen}
+        />
+      )}
     </div>
   );
 }
