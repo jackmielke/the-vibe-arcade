@@ -70,8 +70,7 @@ export default function Auth() {
 
         if (error) throw error;
         
-        toast.success("Account created! Please check your email to verify.");
-        navigate("/");
+        navigate("/confirm-email");
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,

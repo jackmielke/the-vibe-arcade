@@ -68,14 +68,24 @@ export const AuthButton = () => {
     );
   }
 
+  const getInitials = () => {
+    if (profile?.username) {
+      return profile.username[0].toUpperCase();
+    }
+    if (session?.user?.email) {
+      return session.user.email[0].toUpperCase();
+    }
+    return "U";
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-10 w-10 rounded-full p-0">
           <Avatar className="h-10 w-10 border-2 border-glass-border/30">
-            <AvatarImage src={profile?.avatar_url || ""} alt={profile?.username || "User"} />
-            <AvatarFallback className="bg-cosmic-gradient text-foreground">
-              {profile?.username?.[0]?.toUpperCase() || "U"}
+            <AvatarImage src={profile?.avatar_url || ""} alt={profile?.username || session?.user?.email || "User"} />
+            <AvatarFallback className="bg-cosmic-gradient text-foreground font-bold">
+              {getInitials()}
             </AvatarFallback>
           </Avatar>
         </Button>
