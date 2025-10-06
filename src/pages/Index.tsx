@@ -70,9 +70,9 @@ const Index = () => {
                 <VibePriceCard />
               </div>
               
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-primary mb-3 tracking-tight">
-                THE VIBE ARCADE
-              </h1>
+              <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-primary mb-3 tracking-tight">
+                PLAY & CREATE
+              </h2>
               <p className="text-lg md:text-xl text-foreground/80 mb-6 max-w-2xl">
                 Play and create open-source games
               </p>
