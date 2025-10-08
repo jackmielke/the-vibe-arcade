@@ -6,7 +6,7 @@ import { VibePriceCard } from "@/components/VibePriceCard";
 import { CategoryPills } from "@/components/CategoryPills";
 import { GameCard } from "@/components/GameCard";
 import { PlayerAvatar } from "@/components/PlayerAvatar";
-import { NFTSidebar } from "@/components/NFTSidebar";
+import { CreateCharacterDialog } from "@/components/CreateCharacterDialog";
 import { ChevronRight } from "lucide-react";
 import galaxyBg from "@/assets/galaxy-bg.jpg";
 import { useQuery } from "@tanstack/react-query";
@@ -60,6 +60,21 @@ const Index = () => {
     },
   });
 
+  // Fetch NFTs/Characters
+  const { data: nfts = [], isLoading: nftsLoading } = useQuery({
+    queryKey: ['nfts'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('nfts')
+        .select('id, name, description, image_url, minted_count, total_supply')
+        .order('created_at', { ascending: false })
+        .limit(10);
+      
+      if (error) throw error;
+      return data || [];
+    },
+  });
+
   const scrollToGames = () => {
     document.getElementById('games-section')?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -82,9 +97,8 @@ const Index = () => {
       {/* Content */}
       <div className="relative z-10">
         <Header />
-        <NFTSidebar />
         
-        <main className="lg:pr-48">
+        <main>
           <section className="pt-24 pb-8">
             <div className="max-w-7xl mx-auto px-4 md:px-6">
               <div className="max-w-md space-y-6">
@@ -149,18 +163,37 @@ const Index = () => {
             {/* NFTs Section */}
             <section>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-3xl font-bold text-foreground">Featured NFTs</h2>
-                <ChevronRight className="h-6 w-6 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+                <h2 className="text-3xl font-bold text-foreground">Featured Characters</h2>
+                <CreateCharacterDialog />
               </div>
-              <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-4">
-                {[1, 2, 3, 4, 5].map((nft) => (
-                  <div key={nft} className="flex-shrink-0 w-64 bg-glass/20 backdrop-blur-xl border-2 border-glass-border/20 rounded-xl p-4 hover:bg-glass/30 transition-all">
-                    <div className="aspect-square bg-gradient-to-br from-accent/30 to-neon-cyan/30 rounded-lg mb-3" />
-                    <h3 className="font-bold text-foreground mb-1">NFT #{nft}</h3>
-                    <p className="text-sm text-muted-foreground">Collectible asset</p>
-                  </div>
-                ))}
-              </div>
+              {nftsLoading ? (
+                <div className="text-center py-8 text-muted-foreground">Loading...</div>
+              ) : nfts.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">No characters yet. Create your first one!</div>
+              ) : (
+                <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-4">
+                  {nfts.map((nft) => (
+                    <div key={nft.id} className="flex-shrink-0 w-64 bg-glass/20 backdrop-blur-xl border-2 border-glass-border/20 rounded-xl overflow-hidden hover:bg-glass/30 transition-all group cursor-pointer">
+                      <div className="aspect-square relative overflow-hidden">
+                        <img 
+                          src={nft.image_url} 
+                          alt={nft.name}
+                          className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
+                        />
+                      </div>
+                      <div className="p-4">
+                        <h3 className="font-bold text-foreground mb-1 truncate">{nft.name}</h3>
+                        <p className="text-sm text-muted-foreground line-clamp-2">{nft.description || "Character NFT"}</p>
+                        {nft.total_supply > 1 && (
+                          <p className="text-xs text-muted-foreground mt-2">
+                            {nft.minted_count}/{nft.total_supply} minted
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </section>
 
             {/* Top Players Section */}
