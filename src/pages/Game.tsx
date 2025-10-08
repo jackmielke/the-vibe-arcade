@@ -141,7 +141,13 @@ const Game = () => {
 
             {/* Game Preview */}
             {game.thumbnail_url && (
-              <div className="aspect-video bg-glass/20 backdrop-blur-xl border-2 border-glass-border/20 rounded-xl overflow-hidden">
+              <div 
+                className="aspect-video bg-glass/20 backdrop-blur-xl border-2 border-glass-border/20 rounded-xl overflow-hidden cursor-pointer hover:border-primary/40 transition-colors"
+                onClick={() => window.open(game.play_url, '_blank')}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && window.open(game.play_url, '_blank')}
+              >
                 <img 
                   src={game.thumbnail_url} 
                   alt={game.title}
