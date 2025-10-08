@@ -209,7 +209,7 @@ export const GameComments = ({ gameId }: GameCommentsProps) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" id="comments-section">
       <h2 className="text-2xl font-bold text-foreground">Comments</h2>
 
       {/* Comment Form */}

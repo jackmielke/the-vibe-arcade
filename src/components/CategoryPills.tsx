@@ -35,7 +35,7 @@ export const CategoryPills = () => {
 
   return (
     <div className="flex items-center gap-3 mb-8">
-      <div className="flex items-center gap-3 overflow-x-auto scrollbar-hide flex-1">
+      <div className="flex items-center gap-3 overflow-x-auto pb-2 flex-1 scrollbar-thin scrollbar-thumb-glass-border/40 scrollbar-track-transparent">
         <button
           className={`
             px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-all

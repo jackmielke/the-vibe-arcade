@@ -51,22 +51,11 @@ export const GameCard = ({ id, title, description, platforms, image, rank, creat
               </Badge>
             ))}
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
             <LikeButton gameId={id} />
             <CommentCount gameId={id} />
           </div>
         </div>
-
-        {!isAnonymous && creatorProfile && (
-          <div className="flex items-center gap-2 pt-2 border-t border-glass-border/10">
-            <img 
-              src={creatorProfile.avatar_url} 
-              alt={creatorProfile.username}
-              className="w-6 h-6 rounded-full"
-            />
-            <span className="text-xs text-muted-foreground">by {creatorProfile.username}</span>
-          </div>
-        )}
       </div>
     </div>
   );

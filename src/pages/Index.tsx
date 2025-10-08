@@ -105,6 +105,27 @@ const Index = () => {
           </section>
 
           <div className="max-w-7xl mx-auto px-4 md:px-6 space-y-8 pb-16" id="games-section">
+            {/* Creator Avatars */}
+            {games.length > 0 && (
+              <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-glass-border/40 scrollbar-track-transparent">
+                {games
+                  .filter((game) => !game.is_anonymous && game.profiles)
+                  .slice(0, 10)
+                  .map((game) => (
+                    <div key={game.id} className="flex-shrink-0 flex items-center gap-2 px-3 py-2 rounded-full bg-glass/10 backdrop-blur-md border border-glass-border/20 hover:bg-glass/20 transition-all">
+                      <img 
+                        src={game.profiles?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${game.profiles?.username}`}
+                        alt={game.profiles?.username}
+                        className="w-6 h-6 rounded-full"
+                      />
+                      <span className="text-xs text-foreground/80 whitespace-nowrap">
+                        {game.profiles?.username}
+                      </span>
+                    </div>
+                  ))}
+              </div>
+            )}
+
             {/* Categories */}
             <div>
               <CategoryPills />
