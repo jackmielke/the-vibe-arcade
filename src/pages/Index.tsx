@@ -18,7 +18,8 @@ const Index = () => {
   const { data: games = [], isLoading } = useQuery({
     queryKey: ['games'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // Fetch all approved games
+      const { data: gamesData, error: gamesError } = await supabase
         .from('games')
         .select(`
           id,
@@ -31,11 +32,28 @@ const Index = () => {
           creator_id,
           profiles(username, avatar_url)
         `)
-        .eq('status', 'approved')
-        .order('created_at', { ascending: false });
+        .eq('status', 'approved');
       
-      if (error) throw error;
-      return data || [];
+      if (gamesError) throw gamesError;
+      if (!gamesData) return [];
+
+      // Fetch like counts for each game
+      const gamesWithLikes = await Promise.all(
+        gamesData.map(async (game) => {
+          const { count } = await supabase
+            .from('likes')
+            .select('*', { count: 'exact', head: true })
+            .eq('game_id', game.id);
+          
+          return {
+            ...game,
+            likeCount: count || 0
+          };
+        })
+      );
+
+      // Sort by like count (descending), then by created_at
+      return gamesWithLikes.sort((a, b) => b.likeCount - a.likeCount);
     },
   });
 
