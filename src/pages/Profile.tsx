@@ -14,6 +14,7 @@ import { Camera, Loader2, Wallet } from "lucide-react";
 import { toast } from "sonner";
 import galaxyBg from "@/assets/galaxy-bg.jpg";
 import { ImageCropper } from "@/components/ImageCropper";
+import { CreateNFTDialog } from "@/components/CreateNFTDialog";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ export default function Profile() {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<any>(null);
   const [userGames, setUserGames] = useState<any[]>([]);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [isConnectingWallet, setIsConnectingWallet] = useState(false);
@@ -73,6 +75,16 @@ export default function Profile() {
       bio: data.bio || "",
       website_url: data.website_url || "",
     });
+
+    // Check if user is admin
+    const { data: roleData } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .eq("role", "admin")
+      .maybeSingle();
+
+    setIsAdmin(!!roleData);
 
     // Fetch user's games
     const { data: games } = await supabase
@@ -386,11 +398,14 @@ export default function Profile() {
 
           {/* User's Games */}
           <Card className="bg-glass/95 backdrop-blur-xl border-glass-border/30">
-            <CardHeader>
-              <CardTitle className="text-xl">My Submitted Games</CardTitle>
-              <CardDescription>
-                Games you've submitted to Vibe Arcade
-              </CardDescription>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle className="text-xl">My Submitted Games</CardTitle>
+                <CardDescription>
+                  Games you've submitted to Vibe Arcade
+                </CardDescription>
+              </div>
+              {isAdmin && <CreateNFTDialog />}
             </CardHeader>
             <CardContent>
               {userGames.length === 0 ? (

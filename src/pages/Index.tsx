@@ -12,15 +12,9 @@ import galaxyBg from "@/assets/galaxy-bg.jpg";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
-const players = [
-  { name: "Alex", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=player1" },
-  { name: "Jordan", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=player2" },
-  { name: "Casey", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=player3" },
-  { name: "Riley", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=player4" },
-];
-
 const Index = () => {
   const navigate = useNavigate();
+  
   const { data: games = [], isLoading } = useQuery({
     queryKey: ['games'],
     queryFn: async () => {
@@ -39,6 +33,27 @@ const Index = () => {
         `)
         .eq('status', 'approved')
         .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      return data || [];
+    },
+  });
+
+  // Fetch top players based on games created
+  const { data: topPlayers = [] } = useQuery({
+    queryKey: ['topPlayers'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select(`
+          id,
+          username,
+          display_name,
+          avatar_url,
+          games:games(count)
+        `)
+        .order('created_at', { ascending: false })
+        .limit(10);
       
       if (error) throw error;
       return data || [];
@@ -155,9 +170,17 @@ const Index = () => {
                 <ChevronRight className="h-6 w-6 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
               </div>
               <div className="flex gap-6 overflow-x-auto pb-4">
-                {players.map((player) => (
-                  <PlayerAvatar key={player.name} {...player} />
-                ))}
+                {topPlayers.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground w-full">No players yet</div>
+                ) : (
+                  topPlayers.map((player) => (
+                    <PlayerAvatar 
+                      key={player.id} 
+                      name={player.display_name || player.username}
+                      avatar={player.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${player.username}`}
+                    />
+                  ))
+                )}
               </div>
             </section>
           </div>

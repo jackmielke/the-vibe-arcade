@@ -253,6 +253,88 @@ export type Database = {
           },
         ]
       }
+      nft_ownership: {
+        Row: {
+          acquired_at: string
+          id: string
+          nft_id: string
+          owner_id: string
+        }
+        Insert: {
+          acquired_at?: string
+          id?: string
+          nft_id: string
+          owner_id: string
+        }
+        Update: {
+          acquired_at?: string
+          id?: string
+          nft_id?: string
+          owner_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nft_ownership_nft_id_fkey"
+            columns: ["nft_id"]
+            isOneToOne: false
+            referencedRelation: "nfts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      nfts: {
+        Row: {
+          created_at: string
+          creator_id: string | null
+          description: string | null
+          game_id: string | null
+          id: string
+          image_url: string
+          metadata: Json | null
+          minted_count: number
+          name: string
+          token_id: string | null
+          total_supply: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          creator_id?: string | null
+          description?: string | null
+          game_id?: string | null
+          id?: string
+          image_url: string
+          metadata?: Json | null
+          minted_count?: number
+          name: string
+          token_id?: string | null
+          total_supply?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          creator_id?: string | null
+          description?: string | null
+          game_id?: string | null
+          id?: string
+          image_url?: string
+          metadata?: Json | null
+          minted_count?: number
+          name?: string
+          token_id?: string | null
+          total_supply?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nfts_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
