@@ -17,12 +17,13 @@ import { useState } from "react";
 const Index = () => {
   const navigate = useNavigate();
   const [selectedNFTId, setSelectedNFTId] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   
   const { data: games = [], isLoading } = useQuery({
-    queryKey: ['games'],
+    queryKey: ['games', selectedCategory],
     queryFn: async () => {
-      // Fetch all approved games
-      const { data: gamesData, error: gamesError } = await supabase
+      // Build query based on category filter
+      let query = supabase
         .from('games')
         .select(`
           id,
@@ -33,9 +34,19 @@ const Index = () => {
           status,
           is_anonymous,
           creator_id,
-          profiles(username, avatar_url)
+          profiles(username, avatar_url),
+          game_categories!inner(
+            categories(slug)
+          )
         `)
         .eq('status', 'approved');
+      
+      // If category is selected, filter by it
+      if (selectedCategory) {
+        query = query.eq('game_categories.categories.slug', selectedCategory);
+      }
+      
+      const { data: gamesData, error: gamesError } = await query;
       
       if (gamesError) throw gamesError;
       if (!gamesData) return [];
@@ -142,7 +153,10 @@ const Index = () => {
           <div className="max-w-7xl mx-auto px-4 md:px-6 space-y-8 pb-16" id="games-section">
             {/* Categories */}
             <div>
-              <CategoryPills />
+              <CategoryPills 
+                selectedCategory={selectedCategory}
+                onCategoryChange={setSelectedCategory}
+              />
             </div>
 
             {/* Top Games Section */}

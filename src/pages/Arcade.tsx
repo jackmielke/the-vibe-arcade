@@ -4,12 +4,16 @@ import { GameCard } from "@/components/GameCard";
 import galaxyBg from "@/assets/galaxy-bg.jpg";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
 
 const Arcade = () => {
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
   const { data: games = [], isLoading } = useQuery({
-    queryKey: ['games'],
+    queryKey: ['games', selectedCategory],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // Build query based on category filter
+      let query = supabase
         .from('games')
         .select(`
           id,
@@ -20,10 +24,19 @@ const Arcade = () => {
           status,
           is_anonymous,
           creator_id,
-          profiles(username, avatar_url)
+          profiles(username, avatar_url),
+          game_categories!inner(
+            categories(slug)
+          )
         `)
-        .eq('status', 'approved')
-        .order('created_at', { ascending: false });
+        .eq('status', 'approved');
+      
+      // If category is selected, filter by it
+      if (selectedCategory) {
+        query = query.eq('game_categories.categories.slug', selectedCategory);
+      }
+      
+      const { data, error } = await query.order('created_at', { ascending: false });
       
       if (error) throw error;
       return data || [];
@@ -59,7 +72,10 @@ const Arcade = () => {
             </p>
           </div>
 
-          <CategoryPills />
+          <CategoryPills 
+            selectedCategory={selectedCategory}
+            onCategoryChange={setSelectedCategory}
+          />
 
           {isLoading ? (
             <div className="text-center py-16 text-muted-foreground">Loading...</div>

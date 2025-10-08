@@ -1,11 +1,14 @@
-import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ChevronDown } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
-export const CategoryPills = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+interface CategoryPillsProps {
+  selectedCategory: string | null;
+  onCategoryChange: (category: string | null) => void;
+}
+
+export const CategoryPills = ({ selectedCategory, onCategoryChange }: CategoryPillsProps) => {
 
   const { data: categories = [] } = useQuery({
     queryKey: ['categories'],
@@ -35,7 +38,7 @@ export const CategoryPills = () => {
 
   return (
     <div className="flex items-center gap-3 mb-8">
-      <div className="flex items-center gap-3 overflow-x-auto pb-2 flex-1 scrollbar-thin scrollbar-thumb-glass-border/40 scrollbar-track-transparent">
+      <div className="flex flex-wrap md:flex-nowrap items-center gap-3 md:overflow-x-auto pb-2 flex-1 md:scrollbar-thin md:scrollbar-thumb-glass-border/40 md:scrollbar-track-transparent">
         <button
           className={`
             px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-all
@@ -44,7 +47,7 @@ export const CategoryPills = () => {
               : 'bg-transparent text-foreground/60 hover:text-foreground hover:bg-foreground/5'
             }
           `}
-          onClick={() => setSelectedCategory(null)}
+          onClick={() => onCategoryChange(null)}
         >
           All Games
         </button>
@@ -58,7 +61,7 @@ export const CategoryPills = () => {
                 : 'bg-transparent text-foreground/60 hover:text-foreground hover:bg-foreground/5'
               }
             `}
-            onClick={() => setSelectedCategory(category.slug)}
+            onClick={() => onCategoryChange(category.slug)}
           >
             {category.name}
           </button>
@@ -85,7 +88,7 @@ export const CategoryPills = () => {
                     : 'bg-transparent text-foreground/60 hover:text-foreground hover:bg-foreground/5'
                   }
                 `}
-                onClick={() => setSelectedCategory(null)}
+                onClick={() => onCategoryChange(null)}
               >
                 All Games
               </button>
@@ -99,7 +102,7 @@ export const CategoryPills = () => {
                       : 'bg-transparent text-foreground/60 hover:text-foreground hover:bg-foreground/5'
                     }
                   `}
-                  onClick={() => setSelectedCategory(category.slug)}
+                  onClick={() => onCategoryChange(category.slug)}
                 >
                   {category.name}
                 </button>
