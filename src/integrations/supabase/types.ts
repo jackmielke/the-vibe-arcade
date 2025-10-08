@@ -290,9 +290,11 @@ export type Database = {
           game_id: string | null
           id: string
           image_url: string
+          is_for_sale: boolean | null
           metadata: Json | null
           minted_count: number
           name: string
+          price_usd: number | null
           token_id: string | null
           total_supply: number
           updated_at: string
@@ -304,9 +306,11 @@ export type Database = {
           game_id?: string | null
           id?: string
           image_url: string
+          is_for_sale?: boolean | null
           metadata?: Json | null
           minted_count?: number
           name: string
+          price_usd?: number | null
           token_id?: string | null
           total_supply?: number
           updated_at?: string
@@ -318,9 +322,11 @@ export type Database = {
           game_id?: string | null
           id?: string
           image_url?: string
+          is_for_sale?: boolean | null
           metadata?: Json | null
           minted_count?: number
           name?: string
+          price_usd?: number | null
           token_id?: string | null
           total_supply?: number
           updated_at?: string

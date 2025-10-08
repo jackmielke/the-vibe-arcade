@@ -7,13 +7,16 @@ import { CategoryPills } from "@/components/CategoryPills";
 import { GameCard } from "@/components/GameCard";
 import { PlayerAvatar } from "@/components/PlayerAvatar";
 import { CreateCharacterDialog } from "@/components/CreateCharacterDialog";
+import { NFTDetailDialog } from "@/components/NFTDetailDialog";
 import { ChevronRight } from "lucide-react";
 import galaxyBg from "@/assets/galaxy-bg.jpg";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
 
 const Index = () => {
   const navigate = useNavigate();
+  const [selectedNFTId, setSelectedNFTId] = useState<string | null>(null);
   
   const { data: games = [], isLoading } = useQuery({
     queryKey: ['games'],
@@ -84,7 +87,7 @@ const Index = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('nfts')
-        .select('id, name, description, image_url, minted_count, total_supply')
+        .select('id, name, description, image_url, minted_count, total_supply, price_usd, is_for_sale, games(id, title)')
         .order('created_at', { ascending: false })
         .limit(10);
       
@@ -191,19 +194,35 @@ const Index = () => {
               ) : (
                 <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-4">
                   {nfts.map((nft) => (
-                    <div key={nft.id} className="flex-shrink-0 w-64 bg-glass/20 backdrop-blur-xl border-2 border-glass-border/20 rounded-xl overflow-hidden hover:bg-glass/30 transition-all group cursor-pointer">
+                    <div 
+                      key={nft.id} 
+                      onClick={() => setSelectedNFTId(nft.id)}
+                      className="flex-shrink-0 w-64 bg-glass/20 backdrop-blur-xl border-2 border-glass-border/20 rounded-xl overflow-hidden hover:bg-glass/30 transition-all group cursor-pointer hover:scale-[1.02]"
+                    >
                       <div className="aspect-square relative overflow-hidden">
                         <img 
                           src={nft.image_url} 
                           alt={nft.name}
                           className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
                         />
+                        {nft.is_for_sale && nft.price_usd && (
+                          <div className="absolute top-3 right-3 bg-primary/90 backdrop-blur-sm px-3 py-1.5 rounded-full">
+                            <span className="text-sm text-primary-foreground font-bold">
+                              ${nft.price_usd}
+                            </span>
+                          </div>
+                        )}
                       </div>
                       <div className="p-4">
                         <h3 className="font-bold text-foreground mb-1 truncate">{nft.name}</h3>
                         <p className="text-sm text-muted-foreground line-clamp-2">{nft.description || "Character NFT"}</p>
+                        {nft.games && (
+                          <p className="text-xs text-muted-foreground mt-2 truncate">
+                            From: {nft.games.title}
+                          </p>
+                        )}
                         {nft.total_supply > 1 && (
-                          <p className="text-xs text-muted-foreground mt-2">
+                          <p className="text-xs text-muted-foreground mt-1">
                             {nft.minted_count}/{nft.total_supply} minted
                           </p>
                         )}
@@ -236,6 +255,15 @@ const Index = () => {
             </section>
           </div>
         </main>
+
+        {/* NFT Detail Dialog */}
+        {selectedNFTId && (
+          <NFTDetailDialog
+            nftId={selectedNFTId}
+            open={!!selectedNFTId}
+            onOpenChange={(open) => !open && setSelectedNFTId(null)}
+          />
+        )}
       </div>
     </div>
   );

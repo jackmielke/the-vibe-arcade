@@ -28,6 +28,8 @@ export const CreateCharacterDialog = () => {
     name: "",
     description: "",
     image_url: "",
+    price_usd: "",
+    is_for_sale: false,
   });
 
   const handleImageSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -129,6 +131,8 @@ export const CreateCharacterDialog = () => {
         image_url: imageUrl,
         total_supply: 1,
         creator_id: user.id,
+        price_usd: formData.price_usd ? parseFloat(formData.price_usd) : null,
+        is_for_sale: formData.is_for_sale,
       });
 
       if (error) throw error;
@@ -139,6 +143,8 @@ export const CreateCharacterDialog = () => {
         name: "",
         description: "",
         image_url: "",
+        price_usd: "",
+        is_for_sale: false,
       });
       setPreviewImage("");
     } catch (error: any) {
@@ -153,7 +159,13 @@ export const CreateCharacterDialog = () => {
       setOpen(newOpen);
       if (!newOpen) {
         // Reset form when dialog closes
-        setFormData({ name: "", description: "", image_url: "" });
+        setFormData({ 
+          name: "", 
+          description: "", 
+          image_url: "",
+          price_usd: "",
+          is_for_sale: false,
+        });
         setPreviewImage("");
       }
     }}>
@@ -163,7 +175,7 @@ export const CreateCharacterDialog = () => {
           <span className="hidden sm:inline">Create Character</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-lg bg-glass/95 backdrop-blur-xl border-glass-border/30">
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto bg-glass/95 backdrop-blur-xl border-glass-border/30">
         <DialogHeader>
           <DialogTitle>Create New Character</DialogTitle>
           <DialogDescription>
@@ -231,6 +243,36 @@ export const CreateCharacterDialog = () => {
               rows={3}
               maxLength={500}
             />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <Label htmlFor="price">Price (USD)</Label>
+              <Input
+                id="price"
+                type="number"
+                step="0.01"
+                min="0"
+                value={formData.price_usd || ""}
+                onChange={(e) => setFormData({ ...formData, price_usd: e.target.value })}
+                placeholder="9.99"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="for_sale" className="flex items-center gap-2 cursor-pointer">
+                <input
+                  id="for_sale"
+                  type="checkbox"
+                  checked={formData.is_for_sale}
+                  onChange={(e) => setFormData({ ...formData, is_for_sale: e.target.checked })}
+                  className="rounded"
+                />
+                <span>For Sale</span>
+              </Label>
+              <p className="text-xs text-muted-foreground">
+                List on marketplace
+              </p>
+            </div>
           </div>
 
           <div className="flex gap-3 pt-4">
