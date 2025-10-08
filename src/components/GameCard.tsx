@@ -44,7 +44,22 @@ export const GameCard = ({ id, title, description, platforms, image, rank, creat
         </div>
         
         <div className="flex items-center justify-between gap-2">
-          <div className="flex gap-2">
+          {!isAnonymous && creatorProfile && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/profile`); // TODO: navigate to creator's profile when we have profile pages per user
+              }}
+              className="flex-shrink-0 hover:opacity-80 transition-opacity"
+            >
+              <img 
+                src={creatorProfile.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${creatorProfile.username}`}
+                alt={creatorProfile.username}
+                className="w-8 h-8 rounded-full border-2 border-glass-border/20"
+              />
+            </button>
+          )}
+          <div className="flex gap-2 flex-1">
             {platforms.map((platform) => (
               <Badge key={platform} variant="secondary" className="bg-muted/50 text-xs">
                 {platform}
