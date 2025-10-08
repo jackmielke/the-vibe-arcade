@@ -103,7 +103,7 @@ export const NFTDetailDialog = ({ nftId, open, onOpenChange }: NFTDetailDialogPr
         <DialogHeader>
           <DialogTitle className="text-2xl">{nft.name}</DialogTitle>
           <DialogDescription>
-            {nft.is_for_sale ? "Available for purchase" : "Not currently for sale"}
+            {nft.is_for_sale ? "Character NFT available for purchase" : "Character NFT - Not currently for sale"}
           </DialogDescription>
         </DialogHeader>
 
@@ -204,8 +204,8 @@ export const NFTDetailDialog = ({ nftId, open, onOpenChange }: NFTDetailDialogPr
             {/* Demo Note */}
             <p className="text-xs text-muted-foreground text-center">
               {nft.is_for_sale 
-                ? "🎮 Demo mode - Real payments coming soon via Stripe" 
-                : "This character is not currently listed for sale"}
+                ? "🎮 Demo mode - Real NFT payments coming soon via Stripe" 
+                : "This character NFT is not currently listed for sale"}
             </p>
           </div>
         </div>
