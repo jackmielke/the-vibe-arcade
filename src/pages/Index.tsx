@@ -151,8 +151,6 @@ const Index = () => {
             </div>
           </section>
 
-          <Roadmap />
-
           <div className="max-w-7xl mx-auto px-4 md:px-6 space-y-8 pb-16" id="games-section">
             {/* Categories */}
             <div>
@@ -271,6 +269,8 @@ const Index = () => {
               </div>
             </section>
           </div>
+
+          <Roadmap />
         </main>
 
         {/* NFT Detail Dialog */}
