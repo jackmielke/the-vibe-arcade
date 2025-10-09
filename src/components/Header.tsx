@@ -12,7 +12,7 @@ export const Header = () => {
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/')}>
             <img src={vibeLogo} alt="Vibe" className="h-8 w-8 hover:scale-110 transition-transform" />
-            <h1 className="text-2xl md:text-3xl font-black text-primary tracking-tight">VIBE ARCADE</h1>
+            <h1 className="text-2xl md:text-3xl font-zen-dots text-primary tracking-tight">Vibe Arcade</h1>
           </div>
           <div className="relative hidden md:block w-64">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />

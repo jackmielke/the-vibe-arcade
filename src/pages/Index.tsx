@@ -142,8 +142,8 @@ const Index = () => {
                 <VibePriceCard />
               </div>
               
-              <h2 className="text-3xl md:text-4xl font-black text-primary mb-3 tracking-tight">
-                PLAY & BUILD
+              <h2 className="text-3xl md:text-4xl font-zen-dots text-primary mb-3 tracking-tight">
+                Play & Build
               </h2>
               <p className="text-base md:text-lg text-foreground/80 mb-6">
                 Powered by creators. Owned by players.
@@ -166,7 +166,7 @@ const Index = () => {
             {/* Top Games Section */}
             <section>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-3xl font-bold text-foreground">Top Games</h2>
+                <h2 className="text-3xl font-zen-dots text-foreground">Top Games</h2>
                 <button
                   onClick={() => navigate('/arcade')}
                   className="flex items-center gap-2 px-4 py-2 rounded-full bg-glass/30 backdrop-blur-md border border-glass-border/40 text-foreground/80 hover:bg-glass/50 hover:border-accent/50 hover:text-foreground transition-all"
@@ -219,7 +219,7 @@ const Index = () => {
             {/* NFTs Section */}
             <section>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-3xl font-bold text-foreground">Featured Characters</h2>
+                <h2 className="text-3xl font-zen-dots text-foreground">Featured Characters</h2>
                 <CreateCharacterDialog />
               </div>
               {isAnyLoading ? (
@@ -282,7 +282,7 @@ const Index = () => {
             {/* Top Players Section */}
             <section>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-3xl font-bold text-foreground">Top Players</h2>
+                <h2 className="text-3xl font-zen-dots text-foreground">Top Players</h2>
                 <ChevronRight className="h-6 w-6 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
               </div>
               {isAnyLoading ? (
