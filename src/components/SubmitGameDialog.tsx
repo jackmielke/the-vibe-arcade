@@ -133,7 +133,7 @@ export const SubmitGameDialog = () => {
         codebase_url: codebaseUrl || null,
         creator_id: session?.user?.id || null,
         is_anonymous: isAnonymous,
-        status: 'pending'
+        status: 'approved'
       }).select().single();
 
       if (error) throw error;

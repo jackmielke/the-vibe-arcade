@@ -25,7 +25,7 @@ const Arcade = () => {
           is_anonymous,
           creator_id,
           profiles(username, avatar_url),
-          game_categories!inner(
+          game_categories(
             categories(slug)
           )
         `)
