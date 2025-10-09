@@ -9,6 +9,7 @@ import { PlayerAvatar } from "@/components/PlayerAvatar";
 import { CreateCharacterDialog } from "@/components/CreateCharacterDialog";
 import { NFTDetailDialog } from "@/components/NFTDetailDialog";
 import { Roadmap } from "@/components/Roadmap";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ChevronRight } from "lucide-react";
 import galaxyBg from "@/assets/galaxy-bg.jpg";
 import { useQuery } from "@tanstack/react-query";
@@ -73,7 +74,7 @@ const Index = () => {
   });
 
   // Fetch top players based on games created
-  const { data: topPlayers = [] } = useQuery({
+  const { data: topPlayers = [], isLoading: playersLoading } = useQuery({
     queryKey: ['topPlayers'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -107,6 +108,8 @@ const Index = () => {
       return data || [];
     },
   });
+
+  const isAnyLoading = isLoading || nftsLoading || playersLoading;
 
   const scrollToGames = () => {
     document.getElementById('games-section')?.scrollIntoView({ behavior: 'smooth' });
@@ -172,8 +175,25 @@ const Index = () => {
                   <ChevronRight className="h-4 w-4" />
                 </button>
               </div>
-              {isLoading ? (
-                <div className="text-center py-8 text-muted-foreground">Loading...</div>
+              {isAnyLoading ? (
+                <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-4">
+                  {[...Array(6)].map((_, i) => (
+                    <div key={i} className="flex-shrink-0 w-80">
+                      <div className="rounded-xl overflow-hidden bg-glass/10 backdrop-blur-md border border-glass-border/20">
+                        <Skeleton className="w-full h-48" />
+                        <div className="p-4 space-y-3">
+                          <Skeleton className="h-6 w-3/4" />
+                          <Skeleton className="h-4 w-full" />
+                          <Skeleton className="h-4 w-5/6" />
+                          <div className="flex gap-2">
+                            <Skeleton className="h-6 w-16" />
+                            <Skeleton className="h-6 w-16" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               ) : games.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">No games yet</div>
               ) : (
@@ -202,8 +222,19 @@ const Index = () => {
                 <h2 className="text-3xl font-bold text-foreground">Featured Characters</h2>
                 <CreateCharacterDialog />
               </div>
-              {nftsLoading ? (
-                <div className="text-center py-8 text-muted-foreground">Loading...</div>
+              {isAnyLoading ? (
+                <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <div key={i} className="flex-shrink-0 w-64 bg-glass/10 backdrop-blur-xl border-2 border-glass-border/20 rounded-xl overflow-hidden">
+                      <Skeleton className="w-full aspect-square" />
+                      <div className="p-4 space-y-2">
+                        <Skeleton className="h-5 w-3/4" />
+                        <Skeleton className="h-4 w-full" />
+                        <Skeleton className="h-3 w-1/2" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
               ) : nfts.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">No characters yet. Create your first one!</div>
               ) : (
@@ -254,19 +285,30 @@ const Index = () => {
                 <h2 className="text-3xl font-bold text-foreground">Top Players</h2>
                 <ChevronRight className="h-6 w-6 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
               </div>
-              <div className="flex gap-6 overflow-x-auto pb-4">
-                {topPlayers.length === 0 ? (
-                  <div className="text-center py-8 text-muted-foreground w-full">No players yet</div>
-                ) : (
-                  topPlayers.map((player) => (
-                    <PlayerAvatar 
-                      key={player.id} 
-                      name={player.display_name || player.username}
-                      avatar={player.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${player.username}`}
-                    />
-                  ))
-                )}
-              </div>
+              {isAnyLoading ? (
+                <div className="flex gap-6 overflow-x-auto pb-4">
+                  {[...Array(8)].map((_, i) => (
+                    <div key={i} className="flex flex-col items-center gap-2">
+                      <Skeleton className="w-24 h-24 rounded-full" />
+                      <Skeleton className="h-4 w-20" />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex gap-6 overflow-x-auto pb-4">
+                  {topPlayers.length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground w-full">No players yet</div>
+                  ) : (
+                    topPlayers.map((player) => (
+                      <PlayerAvatar 
+                        key={player.id} 
+                        name={player.display_name || player.username}
+                        avatar={player.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${player.username}`}
+                      />
+                    ))
+                  )}
+                </div>
+              )}
             </section>
           </div>
 
