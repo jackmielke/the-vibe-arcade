@@ -1,6 +1,16 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 const roadmapItems = [{
+  title: "$VIBE Token Economy",
+  description: "Launching Vibe Coin to power the arcade in a truly decentralized way - details TBA",
+  status: "planned",
+  icon: "🪙"
+}, {
+  title: "Cross-Game Character System",
+  description: "Devs opt-in to let characters appear across multiple games automatically",
+  status: "planned",
+  icon: "🌐"
+}, {
   title: "Character Evolution System",
   description: "Characters level up and evolve like Pokémon as they're used across games",
   status: "planned",
@@ -10,6 +20,11 @@ const roadmapItems = [{
   description: "Every character NFT includes a GLB file for 3D representation in games",
   status: "planned",
   icon: "🎨"
+}, {
+  title: "Smart Contract Revenue Sharing",
+  description: "Web3-native creative revenue sharing for game builders & avatar creators using tools like herd.eco",
+  status: "planned",
+  icon: "💰"
 }, {
   title: "Achievement Badges",
   description: "Characters earn on-chain badges and achievements that display on their NFT",
@@ -21,25 +36,10 @@ const roadmapItems = [{
   status: "planned",
   icon: "📱"
 }, {
-  title: "Cross-Game Character System",
-  description: "Devs opt-in to let characters appear across multiple games automatically",
-  status: "planned",
-  icon: "🌐"
-}, {
-  title: "$VIBE Token Economy",
-  description: "Launching Vibe Coin to power the arcade in a truly decentralized way - details TBA",
-  status: "planned",
-  icon: "🪙"
-}, {
   title: "Tournaments & Competitions",
   description: "Weekly tournaments, live leaderboards, and prize pools for top players",
   status: "planned",
   icon: "⚔️"
-}, {
-  title: "Smart Contract Revenue Sharing",
-  description: "Web3-native creative revenue sharing for game builders & avatar creators using tools like herd.eco",
-  status: "planned",
-  icon: "💰"
 }, {
   title: "Virtual Arcade Lobby",
   description: "3D lobby space where characters can hang out and play mini-games together",
