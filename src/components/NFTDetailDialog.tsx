@@ -103,7 +103,7 @@ export const NFTDetailDialog = ({ nftId, open, onOpenChange }: NFTDetailDialogPr
         <DialogHeader>
           <DialogTitle className="text-2xl">{nft.name}</DialogTitle>
           <DialogDescription>
-            {nft.is_for_sale ? "Character NFT available for purchase" : "Character NFT - Not currently for sale"}
+            {nft.is_for_sale ? "Official NFT birth certificate - Available for purchase" : "Official NFT birth certificate - Not currently for sale"}
           </DialogDescription>
         </DialogHeader>
 

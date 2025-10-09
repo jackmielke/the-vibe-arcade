@@ -179,7 +179,7 @@ export const CreateCharacterDialog = () => {
         <DialogHeader>
           <DialogTitle>Create New Character</DialogTitle>
           <DialogDescription>
-            Design your character for VIBE ARCADE
+            Design your character for VIBE ARCADE. Each character gets its own NFT birth certificate.
           </DialogDescription>
         </DialogHeader>
 
