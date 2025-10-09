@@ -170,7 +170,7 @@ export const CreateCharacterDialog = () => {
       }
     }}>
       <DialogTrigger asChild>
-        <Button variant="default" size="lg" className="gap-2 flex-shrink-0">
+        <Button variant="glass" size="lg" className="gap-2 flex-shrink-0">
           <Plus className="h-5 w-5" />
           <span className="hidden sm:inline">Create Character</span>
         </Button>

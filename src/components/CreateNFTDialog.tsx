@@ -90,7 +90,7 @@ export const CreateNFTDialog = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="default" size="lg" className="gap-2">
+        <Button variant="glass" size="lg" className="gap-2">
           <Plus className="h-5 w-5" />
           Create NFT
         </Button>
