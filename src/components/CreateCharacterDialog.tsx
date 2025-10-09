@@ -12,7 +12,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ImageCropper } from "@/components/ImageCropper";
 import { toast } from "sonner";
 import { Plus, Upload } from "lucide-react";
 
@@ -20,8 +19,6 @@ export const CreateCharacterDialog = () => {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const [cropperImage, setCropperImage] = useState<string | null>(null);
-  const [isCropperOpen, setIsCropperOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
@@ -46,26 +43,16 @@ export const CreateCharacterDialog = () => {
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const imageDataUrl = e.target?.result as string;
-      setCropperImage(imageDataUrl);
-      setIsCropperOpen(true);
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const handleCropComplete = async (croppedImageBlob: Blob) => {
     setIsUploading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const fileName = `character-${user.id}-${Date.now()}.png`;
-      const { error: uploadError, data } = await supabase.storage
+      const fileName = `character-${user.id}-${Date.now()}.${file.name.split('.').pop()}`;
+      const { error: uploadError } = await supabase.storage
         .from("avatars")
-        .upload(fileName, croppedImageBlob, {
-          contentType: "image/png",
+        .upload(fileName, file, {
+          contentType: file.type,
           upsert: false,
         });
 
@@ -77,20 +64,11 @@ export const CreateCharacterDialog = () => {
 
       setFormData({ ...formData, image_url: publicUrl });
       setPreviewImage(publicUrl);
-      setIsCropperOpen(false);
       toast.success("Image uploaded!");
     } catch (error: any) {
       toast.error(error.message || "Failed to upload image");
     } finally {
       setIsUploading(false);
-    }
-  };
-
-  const handleCropCancel = () => {
-    setIsCropperOpen(false);
-    setCropperImage(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
     }
   };
 
@@ -192,7 +170,7 @@ export const CreateCharacterDialog = () => {
               className="relative group cursor-pointer"
               onClick={() => fileInputRef.current?.click()}
             >
-              <div className="w-32 h-32 mx-auto rounded-full bg-glass/10 backdrop-blur-md border-2 border-glass-border/20 overflow-hidden hover:border-accent transition-all flex items-center justify-center">
+              <div className="w-48 h-48 mx-auto rounded-lg bg-glass/10 backdrop-blur-md border-2 border-glass-border/20 overflow-hidden hover:border-accent transition-all flex items-center justify-center">
                 {previewImage ? (
                   <img 
                     src={previewImage} 
@@ -284,15 +262,6 @@ export const CreateCharacterDialog = () => {
             </Button>
           </div>
         </form>
-        
-        {isCropperOpen && cropperImage && (
-          <ImageCropper
-            image={cropperImage}
-            onCropComplete={handleCropComplete}
-            onCancel={handleCropCancel}
-            isOpen={isCropperOpen}
-          />
-        )}
       </DialogContent>
     </Dialog>
   );
