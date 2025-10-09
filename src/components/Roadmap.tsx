@@ -33,10 +33,10 @@ const roadmapItems = [
     icon: "🌐"
   },
   {
-    title: "Character Rental Marketplace",
-    description: "Rent rare characters for limited time or fuse two characters into unique new ones",
+    title: "$VIBE Token Economy",
+    description: "Launching Vibe Coin to power the arcade in a truly decentralized way - details TBA",
     status: "planned",
-    icon: "💎"
+    icon: "🪙"
   },
   {
     title: "Tournaments & Competitions",
@@ -45,8 +45,8 @@ const roadmapItems = [
     icon: "⚔️"
   },
   {
-    title: "Creator Revenue Sharing",
-    description: "Game devs earn percentage when their characters are used and traded",
+    title: "Smart Contract Revenue Sharing",
+    description: "Web3-native creative revenue sharing for game builders & avatar creators using tools like herd.eco",
     status: "planned",
     icon: "💰"
   },
@@ -67,12 +67,6 @@ const roadmapItems = [
     description: "Limited edition characters and special events for holidays and collaborations",
     status: "planned",
     icon: "🎃"
-  },
-  {
-    title: "No-Code Game Builder",
-    description: "Create games directly in the browser with drag-and-drop tools",
-    status: "planned",
-    icon: "🛠️"
   }
 ];
 
@@ -89,6 +83,9 @@ export const Roadmap = () => {
           </h2>
           <p className="text-lg text-foreground/60 max-w-2xl mx-auto">
             The arcade is just getting started. Here's where we're headed.
+          </p>
+          <p className="text-sm text-foreground/50 mt-2">
+            Powered by the amazing folks at <a href="https://long.xyz" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">LONG.xyz</a>
           </p>
         </div>
 
