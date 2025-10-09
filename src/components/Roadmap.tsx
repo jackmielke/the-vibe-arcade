@@ -31,6 +31,48 @@ const roadmapItems = [
     description: "Devs opt-in to let characters appear across multiple games automatically",
     status: "planned",
     icon: "🌐"
+  },
+  {
+    title: "Character Rental Marketplace",
+    description: "Rent rare characters for limited time or fuse two characters into unique new ones",
+    status: "planned",
+    icon: "💎"
+  },
+  {
+    title: "Tournaments & Competitions",
+    description: "Weekly tournaments, live leaderboards, and prize pools for top players",
+    status: "planned",
+    icon: "⚔️"
+  },
+  {
+    title: "Creator Revenue Sharing",
+    description: "Game devs earn percentage when their characters are used and traded",
+    status: "planned",
+    icon: "💰"
+  },
+  {
+    title: "Virtual Arcade Lobby",
+    description: "3D lobby space where characters can hang out and play mini-games together",
+    status: "planned",
+    icon: "🕹️"
+  },
+  {
+    title: "Social & Following System",
+    description: "Follow favorite creators, share achievements, and build your gaming identity",
+    status: "planned",
+    icon: "👥"
+  },
+  {
+    title: "Seasonal Events & Drops",
+    description: "Limited edition characters and special events for holidays and collaborations",
+    status: "planned",
+    icon: "🎃"
+  },
+  {
+    title: "No-Code Game Builder",
+    description: "Create games directly in the browser with drag-and-drop tools",
+    status: "planned",
+    icon: "🛠️"
   }
 ];
 
