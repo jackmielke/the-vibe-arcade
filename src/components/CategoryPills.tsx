@@ -37,8 +37,8 @@ export const CategoryPills = ({ selectedCategory, onCategoryChange }: CategoryPi
   });
 
   return (
-    <div className="flex items-center gap-3 mb-8">
-      <div className="flex flex-wrap md:flex-nowrap items-center gap-3 md:overflow-x-auto pb-2 flex-1 md:scrollbar-thin md:scrollbar-thumb-glass-border/40 md:scrollbar-track-transparent">
+    <div className="flex items-center gap-3 mb-8 w-full">
+      <div className="flex items-center gap-3 overflow-x-auto pb-2 flex-1 scrollbar-thin scrollbar-thumb-foreground/20 scrollbar-track-transparent">
         <button
           className={`
             px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-all
