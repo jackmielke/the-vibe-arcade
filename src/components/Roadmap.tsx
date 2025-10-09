@@ -1,78 +1,63 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-
-const roadmapItems = [
-  {
-    title: "Character Evolution System",
-    description: "Characters level up and evolve like Pokémon as they're used across games",
-    status: "planned",
-    icon: "🎮"
-  },
-  {
-    title: "3D Character Models",
-    description: "Every character NFT includes a GLB file for 3D representation in games",
-    status: "planned",
-    icon: "🎨"
-  },
-  {
-    title: "Achievement Badges",
-    description: "Characters earn on-chain badges and achievements that display on their NFT",
-    status: "planned",
-    icon: "🏆"
-  },
-  {
-    title: "Physical Arcade Integration",
-    description: "QR codes on characters unlock IRL arcade events and scavenger hunts",
-    status: "planned",
-    icon: "📱"
-  },
-  {
-    title: "Cross-Game Character System",
-    description: "Devs opt-in to let characters appear across multiple games automatically",
-    status: "planned",
-    icon: "🌐"
-  },
-  {
-    title: "$VIBE Token Economy",
-    description: "Launching Vibe Coin to power the arcade in a truly decentralized way - details TBA",
-    status: "planned",
-    icon: "🪙"
-  },
-  {
-    title: "Tournaments & Competitions",
-    description: "Weekly tournaments, live leaderboards, and prize pools for top players",
-    status: "planned",
-    icon: "⚔️"
-  },
-  {
-    title: "Smart Contract Revenue Sharing",
-    description: "Web3-native creative revenue sharing for game builders & avatar creators using tools like herd.eco",
-    status: "planned",
-    icon: "💰"
-  },
-  {
-    title: "Virtual Arcade Lobby",
-    description: "3D lobby space where characters can hang out and play mini-games together",
-    status: "planned",
-    icon: "🕹️"
-  },
-  {
-    title: "Social & Following System",
-    description: "Follow favorite creators, share achievements, and build your gaming identity",
-    status: "planned",
-    icon: "👥"
-  },
-  {
-    title: "Seasonal Events & Drops",
-    description: "Limited edition characters and special events for holidays and collaborations",
-    status: "planned",
-    icon: "🎃"
-  }
-];
-
+const roadmapItems = [{
+  title: "Character Evolution System",
+  description: "Characters level up and evolve like Pokémon as they're used across games",
+  status: "planned",
+  icon: "🎮"
+}, {
+  title: "3D Character Models",
+  description: "Every character NFT includes a GLB file for 3D representation in games",
+  status: "planned",
+  icon: "🎨"
+}, {
+  title: "Achievement Badges",
+  description: "Characters earn on-chain badges and achievements that display on their NFT",
+  status: "planned",
+  icon: "🏆"
+}, {
+  title: "Physical Arcade Integration",
+  description: "QR codes on characters unlock IRL arcade events and scavenger hunts",
+  status: "planned",
+  icon: "📱"
+}, {
+  title: "Cross-Game Character System",
+  description: "Devs opt-in to let characters appear across multiple games automatically",
+  status: "planned",
+  icon: "🌐"
+}, {
+  title: "$VIBE Token Economy",
+  description: "Launching Vibe Coin to power the arcade in a truly decentralized way - details TBA",
+  status: "planned",
+  icon: "🪙"
+}, {
+  title: "Tournaments & Competitions",
+  description: "Weekly tournaments, live leaderboards, and prize pools for top players",
+  status: "planned",
+  icon: "⚔️"
+}, {
+  title: "Smart Contract Revenue Sharing",
+  description: "Web3-native creative revenue sharing for game builders & avatar creators using tools like herd.eco",
+  status: "planned",
+  icon: "💰"
+}, {
+  title: "Virtual Arcade Lobby",
+  description: "3D lobby space where characters can hang out and play mini-games together",
+  status: "planned",
+  icon: "🕹️"
+}, {
+  title: "Social & Following System",
+  description: "Follow favorite creators, share achievements, and build your gaming identity",
+  status: "planned",
+  icon: "👥"
+}, {
+  title: "Seasonal Events & Drops",
+  description: "Limited edition characters and special events for holidays and collaborations",
+  status: "planned",
+  icon: "🎃"
+}];
 export const Roadmap = () => {
-  return (
-    <section className="py-20 px-4 md:px-6 bg-gradient-to-b from-background to-background/50">
+  return <section className="py-20 px-4 md:px-6 bg-gradient-to-b from-background to-background/50">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <Badge variant="outline" className="mb-4 text-primary border-primary/50">
@@ -84,17 +69,11 @@ export const Roadmap = () => {
           <p className="text-lg text-foreground/60 max-w-2xl mx-auto">
             The arcade is just getting started. Here's where we're headed.
           </p>
-          <p className="text-sm text-foreground/50 mt-2">
-            Powered by the amazing folks at <a href="https://long.xyz" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">LONG.xyz</a>
-          </p>
+          
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {roadmapItems.map((item, index) => (
-            <Card 
-              key={index}
-              className="p-6 bg-card/50 backdrop-blur-sm border-primary/20 hover:border-primary/40 transition-all hover:transform hover:scale-105"
-            >
+          {roadmapItems.map((item, index) => <Card key={index} className="p-6 bg-card/50 backdrop-blur-sm border-primary/20 hover:border-primary/40 transition-all hover:transform hover:scale-105">
               <div className="text-4xl mb-4">{item.icon}</div>
               <h3 className="text-xl font-bold text-primary mb-2">
                 {item.title}
@@ -105,10 +84,8 @@ export const Roadmap = () => {
               <Badge variant="secondary" className="text-xs">
                 {item.status}
               </Badge>
-            </Card>
-          ))}
+            </Card>)}
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
