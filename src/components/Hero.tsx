@@ -4,7 +4,7 @@ export const Hero = () => {
   return (
     <section className="pt-32 pb-12 px-4 md:px-6">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-zen-dots text-primary mb-4 tracking-tight">
+        <h1 className="text-4xl md:text-6xl lg:text-7xl font-zen-dots text-primary mb-4 tracking-tight">
           Welcome to the arcade of the future
         </h1>
         <p className="text-xl md:text-2xl text-foreground/80 mb-4 max-w-2xl">

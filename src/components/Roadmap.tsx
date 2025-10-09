@@ -63,7 +63,7 @@ export const Roadmap = () => {
           <Badge variant="outline" className="mb-4 text-primary border-primary/50">
             THE FUTURE
           </Badge>
-          <h2 className="text-4xl md:text-5xl font-zen-dots text-primary mb-4 tracking-tight">
+          <h2 className="text-3xl md:text-4xl font-zen-dots text-primary mb-4 tracking-tight">
             What's Coming Next
           </h2>
           <p className="text-lg text-foreground/60 max-w-2xl mx-auto">
