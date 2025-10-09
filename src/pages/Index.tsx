@@ -8,6 +8,7 @@ import { GameCard } from "@/components/GameCard";
 import { PlayerAvatar } from "@/components/PlayerAvatar";
 import { CreateCharacterDialog } from "@/components/CreateCharacterDialog";
 import { NFTDetailDialog } from "@/components/NFTDetailDialog";
+import { Roadmap } from "@/components/Roadmap";
 import { ChevronRight } from "lucide-react";
 import galaxyBg from "@/assets/galaxy-bg.jpg";
 import { useQuery } from "@tanstack/react-query";
@@ -149,6 +150,8 @@ const Index = () => {
               </div>
             </div>
           </section>
+
+          <Roadmap />
 
           <div className="max-w-7xl mx-auto px-4 md:px-6 space-y-8 pb-16" id="games-section">
             {/* Categories */}
