@@ -1,7 +1,7 @@
 import { Header } from "@/components/Header";
 import { CategoryPills } from "@/components/CategoryPills";
 import { GameCard } from "@/components/GameCard";
-import galaxyBg from "@/assets/galaxy-bg.jpg";
+import galaxyBg from "@/assets/galaxy-bg-hq.jpg";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";

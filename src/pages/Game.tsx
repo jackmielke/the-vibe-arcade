@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { ArrowLeft, ExternalLink, Code } from "lucide-react";
-import galaxyBg from "@/assets/galaxy-bg.jpg";
+import galaxyBg from "@/assets/galaxy-bg-hq.jpg";
 import { LikeButton } from "@/components/LikeButton";
 import { GameComments } from "@/components/GameComments";
 

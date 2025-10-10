@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Camera, Loader2, Wallet } from "lucide-react";
 import { toast } from "sonner";
-import galaxyBg from "@/assets/galaxy-bg.jpg";
+import galaxyBg from "@/assets/galaxy-bg-hq.jpg";
 import { ImageCropper } from "@/components/ImageCropper";
 import { CreateNFTDialog } from "@/components/CreateNFTDialog";
 
