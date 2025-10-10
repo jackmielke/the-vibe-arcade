@@ -9,6 +9,7 @@ import { PlayerAvatar } from "@/components/PlayerAvatar";
 import { CreateCharacterDialog } from "@/components/CreateCharacterDialog";
 import { NFTDetailDialog } from "@/components/NFTDetailDialog";
 import { Roadmap } from "@/components/Roadmap";
+import { WhyCrypto } from "@/components/WhyCrypto";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ChevronRight } from "lucide-react";
 import galaxyBg from "@/assets/galaxy-bg.jpg";
@@ -313,6 +314,8 @@ const Index = () => {
           </div>
 
           <Roadmap />
+          
+          <WhyCrypto />
         </main>
 
         {/* NFT Detail Dialog */}

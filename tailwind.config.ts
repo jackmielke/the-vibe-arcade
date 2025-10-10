@@ -15,6 +15,7 @@ export default {
     extend: {
       fontFamily: {
         'zen-dots': ['Zen Dots', 'cursive'],
+        'instrument-serif': ['Instrument Serif', 'serif'],
       },
       colors: {
         border: "hsl(var(--border))",
