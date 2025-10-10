@@ -3,7 +3,7 @@ export const WhyCrypto = () => {
     <section className="py-20 px-4 md:px-6">
       <div className="max-w-4xl mx-auto">
         <div className="bg-glass/30 backdrop-blur-xl border border-glass-border/30 rounded-2xl p-8 md:p-12 shadow-glow">
-          <h2 className="text-3xl md:text-4xl font-zen-dots text-primary mb-8 text-center">
+          <h2 className="text-3xl md:text-4xl font-zen-dots text-primary mb-8 text-center pb-4 border-b border-primary/20">
             The Arcade of the Future
           </h2>
           
