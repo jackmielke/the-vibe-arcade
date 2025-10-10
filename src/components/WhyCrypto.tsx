@@ -6,36 +6,38 @@ export const WhyCrypto = () => {
           The Arcade of the Future
         </h2>
         
-        <div className="space-y-6 font-instrument-serif text-lg md:text-xl text-foreground/90 leading-relaxed">
-          <p>
-            In today's games, when servers shut down, your items disappear forever. 
-            Your hard-earned achievements, your favorite characters, your entire digital identity—gone.
-          </p>
-          
-          <p>
-            But what if your character could live across multiple games, building a reputation that travels with you? 
-            What if the sword you earned in one world could become a legend in another?
-          </p>
-          
-          <p className="text-xl md:text-2xl font-semibold text-primary/90 py-4">
-            That's the promise of true ownership.
-          </p>
-          
-          <p>
-            With blockchain technology, you own your creations in a way that no company can revoke. 
-            Your characters, your items, your legacy—they're yours. Not locked in a company's database, 
-            but living on a decentralized network that belongs to everyone and no one.
-          </p>
-          
-          <p>
-            Every character you create gets an NFT birth certificate. It's not just a receipt—it's proof 
-            that this digital being belongs to you, forever. Ready to explore new worlds, build new stories, 
-            and become part of gaming history.
-          </p>
-          
-          <p className="italic text-foreground/70 pt-4">
-            Welcome to 2125. Welcome to the future of play.
-          </p>
+        <div className="bg-glass/30 backdrop-blur-xl border border-glass-border/30 rounded-2xl p-8 md:p-12 shadow-glow">
+          <div className="space-y-6 font-instrument-serif text-lg md:text-xl text-foreground/90 leading-relaxed">
+            <p>
+              This is where vibe coding meets web3. Where the power of play becomes real, 
+              and building at the speed of intuition isn't just a dream—it's how we work.
+            </p>
+            
+            <p>
+              In today's games, when servers shut down, your items disappear forever. 
+              Your creations, your characters, your entire digital identity—gone. 
+              But we're building something different.
+            </p>
+            
+            <p className="text-xl md:text-2xl font-semibold text-primary/90 py-4">
+              True ownership. Real play.
+            </p>
+            
+            <p>
+              With blockchain, you own your creations in a way that no company can revoke. 
+              Not locked in a database somewhere, but living on a decentralized network. 
+              Your characters get NFT birth certificates—proof they belong to you, forever.
+            </p>
+            
+            <p>
+              We're dreaming out loud. Building in public. Creating an arcade where your imagination 
+              has a permanent home, and every game you build adds to a universe that can't be deleted.
+            </p>
+            
+            <p className="italic text-foreground/70 pt-4">
+              Welcome to 2125. Welcome to the convergence of play and ownership.
+            </p>
+          </div>
         </div>
       </div>
     </section>
