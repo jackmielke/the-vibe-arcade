@@ -54,23 +54,24 @@ const Index = () => {
       if (gamesError) throw gamesError;
       if (!gamesData) return [];
 
-      // Fetch like counts for each game
-      const gamesWithLikes = await Promise.all(
+      // Fetch like and comment counts for each game in parallel
+      const gamesWithCounts = await Promise.all(
         gamesData.map(async (game) => {
-          const { count } = await supabase
-            .from('likes')
-            .select('*', { count: 'exact', head: true })
-            .eq('game_id', game.id);
+          const [likesResult, commentsResult] = await Promise.all([
+            supabase.from('likes').select('*', { count: 'exact', head: true }).eq('game_id', game.id),
+            supabase.from('comments').select('*', { count: 'exact', head: true }).eq('game_id', game.id),
+          ]);
           
           return {
             ...game,
-            likeCount: count || 0
+            likeCount: likesResult.count || 0,
+            commentCount: commentsResult.count || 0,
           };
         })
       );
 
-      // Sort by like count (descending), then by created_at
-      return gamesWithLikes.sort((a, b) => b.likeCount - a.likeCount);
+      // Sort by like count (descending)
+      return gamesWithCounts.sort((a, b) => b.likeCount - a.likeCount);
     },
   });
 
@@ -210,6 +211,8 @@ const Index = () => {
                         rank={index + 1}
                         creatorProfile={game.profiles}
                         isAnonymous={game.is_anonymous}
+                        likeCount={game.likeCount}
+                        commentCount={game.commentCount}
                       />
                     </div>
                   ))}
