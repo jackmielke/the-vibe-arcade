@@ -6,14 +6,18 @@ import { useNavigate } from "react-router-dom";
 
 interface CommentCountProps {
   gameId: string;
+  initialCommentCount?: number;
 }
 
-export const CommentCount = ({ gameId }: CommentCountProps) => {
-  const [commentCount, setCommentCount] = useState(0);
+export const CommentCount = ({ gameId, initialCommentCount = 0 }: CommentCountProps) => {
+  const [commentCount, setCommentCount] = useState(initialCommentCount);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchCommentCount();
+    // Only fetch if we don't have an initial count
+    if (initialCommentCount === 0) {
+      fetchCommentCount();
+    }
   }, [gameId]);
 
   const fetchCommentCount = async () => {

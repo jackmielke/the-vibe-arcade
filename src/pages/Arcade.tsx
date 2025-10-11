@@ -39,7 +39,24 @@ const Arcade = () => {
       const { data, error } = await query.order('created_at', { ascending: false });
       
       if (error) throw error;
-      return data || [];
+      
+      // Fetch like counts and comment counts for all games in parallel
+      const gamesWithCounts = await Promise.all(
+        (data || []).map(async (game) => {
+          const [likesResult, commentsResult] = await Promise.all([
+            supabase.from('likes').select('*', { count: 'exact', head: true }).eq('game_id', game.id),
+            supabase.from('comments').select('*', { count: 'exact', head: true }).eq('game_id', game.id),
+          ]);
+          
+          return {
+            ...game,
+            likeCount: likesResult.count || 0,
+            commentCount: commentsResult.count || 0,
+          };
+        })
+      );
+      
+      return gamesWithCounts;
     },
   });
 
@@ -93,6 +110,8 @@ const Arcade = () => {
                   image={game.thumbnail_url || `https://images.unsplash.com/photo-${['1511512578047-dfb367046420', '1538481199705-c710c4e965fc', '1579566346927-c68383817a25'][index % 3]}?w=800&auto=format&fit=crop`}
                   creatorProfile={game.profiles}
                   isAnonymous={game.is_anonymous}
+                  likeCount={game.likeCount}
+                  commentCount={game.commentCount}
                 />
               ))}
             </div>

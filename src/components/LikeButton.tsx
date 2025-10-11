@@ -20,7 +20,10 @@ export const LikeButton = ({ gameId, initialLikeCount = 0, showCount = true }: L
 
   useEffect(() => {
     checkIfLiked();
-    fetchLikeCount();
+    // Only fetch if we don't have an initial count
+    if (initialLikeCount === 0) {
+      fetchLikeCount();
+    }
   }, [gameId]);
 
   const checkIfLiked = async () => {

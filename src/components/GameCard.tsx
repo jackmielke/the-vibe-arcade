@@ -15,9 +15,11 @@ interface GameCardProps {
     avatar_url: string;
   } | null;
   isAnonymous?: boolean;
+  likeCount?: number;
+  commentCount?: number;
 }
 
-export const GameCard = ({ id, title, description, platforms, image, rank, creatorProfile, isAnonymous }: GameCardProps) => {
+export const GameCard = ({ id, title, description, platforms, image, rank, creatorProfile, isAnonymous, likeCount, commentCount }: GameCardProps) => {
   const navigate = useNavigate();
 
   return (
@@ -67,8 +69,8 @@ export const GameCard = ({ id, title, description, platforms, image, rank, creat
             ))}
           </div>
           <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
-            <LikeButton gameId={id} />
-            <CommentCount gameId={id} />
+            <LikeButton gameId={id} initialLikeCount={likeCount} />
+            <CommentCount gameId={id} initialCommentCount={commentCount} />
           </div>
         </div>
       </div>
