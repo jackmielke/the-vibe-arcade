@@ -34,7 +34,7 @@ export const WhyCrypto = () => {
                 <p className="font-semibold text-primary/90">Everyone is a builder.</p>
                 
                 <p>
-                  We're not just coding new tools. We're defining the physics of our digital universe — together.
+                  We're not just building new tools. We're defining the physics of our digital universe — together.
                 </p>
               </div>
             </div>
