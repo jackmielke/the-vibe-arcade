@@ -1,9 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { SubmitGameDialog } from "@/components/SubmitGameDialog";
-import { Button } from "@/components/ui/button";
 import { VibePriceCard } from "@/components/VibePriceCard";
-import { CategoryPills } from "@/components/CategoryPills";
 import { GameCard } from "@/components/GameCard";
 import { PlayerAvatar } from "@/components/PlayerAvatar";
 import { CreateCharacterDialog } from "@/components/CreateCharacterDialog";
@@ -170,28 +168,30 @@ const Index = () => {
           <div className="max-w-7xl mx-auto px-4 md:px-6 space-y-8 pb-16" id="games-section">
             {/* Sort Buttons */}
             <div className="flex gap-3">
-              <Button
-                variant={sortBy === 'top' ? 'default' : 'outline'}
+              <button
                 onClick={() => setSortBy('top')}
-                className="rounded-full"
+                className={`
+                  px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-all
+                  ${sortBy === 'top'
+                    ? 'bg-foreground/10 text-foreground' 
+                    : 'bg-transparent text-foreground/60 hover:text-foreground hover:bg-foreground/5'
+                  }
+                `}
               >
                 Top Games
-              </Button>
-              <Button
-                variant={sortBy === 'recent' ? 'default' : 'outline'}
+              </button>
+              <button
                 onClick={() => setSortBy('recent')}
-                className="rounded-full"
+                className={`
+                  px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-all
+                  ${sortBy === 'recent'
+                    ? 'bg-foreground/10 text-foreground' 
+                    : 'bg-transparent text-foreground/60 hover:text-foreground hover:bg-foreground/5'
+                  }
+                `}
               >
                 Most Recent
-              </Button>
-            </div>
-
-            {/* Categories */}
-            <div>
-              <CategoryPills 
-                selectedCategory={selectedCategory}
-                onCategoryChange={setSelectedCategory}
-              />
+              </button>
             </div>
 
             {/* Top Games Section */}
