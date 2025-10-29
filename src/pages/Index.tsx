@@ -21,9 +21,10 @@ const Index = () => {
   const navigate = useNavigate();
   const [selectedNFTId, setSelectedNFTId] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState<'top' | 'recent'>('top');
   
   const { data: games = [], isLoading } = useQuery({
-    queryKey: ['games', selectedCategory],
+    queryKey: ['games', selectedCategory, sortBy],
     queryFn: async () => {
       // Build query based on category filter
       let query = supabase
@@ -37,6 +38,7 @@ const Index = () => {
           status,
           is_anonymous,
           creator_id,
+          created_at,
           profiles(username, avatar_url),
           game_categories(
             categories(slug)
@@ -70,8 +72,17 @@ const Index = () => {
         })
       );
 
-      // Sort by like count (descending)
-      return gamesWithCounts.sort((a, b) => b.likeCount - a.likeCount);
+      // Sort based on selected sort type
+      if (sortBy === 'top') {
+        return gamesWithCounts.sort((a, b) => b.likeCount - a.likeCount);
+      } else {
+        // Sort by created_at (most recent first)
+        return gamesWithCounts.sort((a, b) => {
+          const dateA = new Date(a.created_at || 0).getTime();
+          const dateB = new Date(b.created_at || 0).getTime();
+          return dateB - dateA;
+        });
+      }
     },
   });
 
@@ -157,6 +168,24 @@ const Index = () => {
           </section>
 
           <div className="max-w-7xl mx-auto px-4 md:px-6 space-y-8 pb-16" id="games-section">
+            {/* Sort Buttons */}
+            <div className="flex gap-3">
+              <Button
+                variant={sortBy === 'top' ? 'default' : 'outline'}
+                onClick={() => setSortBy('top')}
+                className="rounded-full"
+              >
+                Top Games
+              </Button>
+              <Button
+                variant={sortBy === 'recent' ? 'default' : 'outline'}
+                onClick={() => setSortBy('recent')}
+                className="rounded-full"
+              >
+                Most Recent
+              </Button>
+            </div>
+
             {/* Categories */}
             <div>
               <CategoryPills 
@@ -168,7 +197,9 @@ const Index = () => {
             {/* Top Games Section */}
             <section>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-zen-dots text-foreground">Top Games</h2>
+                <h2 className="text-2xl font-zen-dots text-foreground">
+                  {sortBy === 'top' ? 'Top Games' : 'Most Recent Games'}
+                </h2>
                 <button
                   onClick={() => navigate('/arcade')}
                   className="flex items-center gap-2 px-4 py-2 rounded-full bg-glass/30 backdrop-blur-md border border-glass-border/40 text-foreground/80 hover:bg-glass/50 hover:border-accent/50 hover:text-foreground transition-all"
