@@ -19,7 +19,7 @@ const Index = () => {
   const navigate = useNavigate();
   const [selectedNFTId, setSelectedNFTId] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [sortBy, setSortBy] = useState<'top' | 'recent'>('top');
+  const [sortBy, setSortBy] = useState<'top' | 'recent'>('recent');
   
   const { data: games = [], isLoading } = useQuery({
     queryKey: ['games', selectedCategory, sortBy],
