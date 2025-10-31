@@ -169,18 +169,6 @@ const Index = () => {
             {/* Sort Buttons */}
             <div className="flex gap-3">
               <button
-                onClick={() => setSortBy('top')}
-                className={`
-                  px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-all
-                  ${sortBy === 'top'
-                    ? 'bg-foreground/10 text-foreground' 
-                    : 'bg-transparent text-foreground/60 hover:text-foreground hover:bg-foreground/5'
-                  }
-                `}
-              >
-                Top Games
-              </button>
-              <button
                 onClick={() => setSortBy('recent')}
                 className={`
                   px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-all
@@ -192,6 +180,18 @@ const Index = () => {
               >
                 Most Recent
               </button>
+              <button
+                onClick={() => setSortBy('top')}
+                className={`
+                  px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-all
+                  ${sortBy === 'top'
+                    ? 'bg-foreground/10 text-foreground' 
+                    : 'bg-transparent text-foreground/60 hover:text-foreground hover:bg-foreground/5'
+                  }
+                `}
+              >
+                Top Games
+              </button>
             </div>
 
             {/* Top Games Section */}
@@ -199,12 +199,13 @@ const Index = () => {
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-2xl font-zen-dots text-foreground">
                   {sortBy === 'top' ? 'Top Games' : 'Most Recent Games'}
+                  <span className="text-lg text-muted-foreground ml-2">({games.length})</span>
                 </h2>
                 <button
                   onClick={() => navigate('/arcade')}
                   className="flex items-center gap-2 px-4 py-2 rounded-full bg-glass/30 backdrop-blur-md border border-glass-border/40 text-foreground/80 hover:bg-glass/50 hover:border-accent/50 hover:text-foreground transition-all"
                 >
-                  View All
+                  View All ({games.length})
                   <ChevronRight className="h-4 w-4" />
                 </button>
               </div>
@@ -231,7 +232,7 @@ const Index = () => {
                 <div className="text-center py-8 text-muted-foreground">No games yet</div>
               ) : (
                 <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-4">
-                  {games.slice(0, 6).map((game, index) => (
+                  {games.slice(0, 10).map((game, index) => (
                     <div key={game.id} className="flex-shrink-0 w-80">
                       <GameCard
                         id={game.id}
