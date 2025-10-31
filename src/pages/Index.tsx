@@ -199,7 +199,6 @@ const Index = () => {
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-2xl font-zen-dots text-foreground">
                   {sortBy === 'top' ? 'Top Games' : 'Most Recent Games'}
-                  <span className="text-lg text-muted-foreground ml-2">({games.length})</span>
                 </h2>
                 <button
                   onClick={() => navigate('/arcade')}
