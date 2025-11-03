@@ -196,16 +196,18 @@ const Index = () => {
 
             {/* Top Games Section */}
             <section>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-zen-dots text-foreground">
+              <div className="flex items-center justify-between mb-3 gap-2">
+                <h2 className="text-lg md:text-2xl font-zen-dots text-foreground">
                   {sortBy === 'top' ? 'Top Games' : 'Most Recent Games'}
                 </h2>
                 <button
                   onClick={() => navigate('/arcade')}
-                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-glass/30 backdrop-blur-md border border-glass-border/40 text-foreground/80 hover:bg-glass/50 hover:border-accent/50 hover:text-foreground transition-all"
+                  className="flex items-center gap-1 md:gap-2 px-3 md:px-4 py-1.5 md:py-2 rounded-full bg-glass/30 backdrop-blur-md border border-glass-border/40 text-foreground/80 hover:bg-glass/50 hover:border-accent/50 hover:text-foreground transition-all text-sm md:text-base whitespace-nowrap"
                 >
-                  View All ({games.length})
-                  <ChevronRight className="h-4 w-4" />
+                  <span className="hidden md:inline">View All</span>
+                  <span className="md:hidden">All</span>
+                  <span>({games.length})</span>
+                  <ChevronRight className="h-3 w-3 md:h-4 md:w-4" />
                 </button>
               </div>
               {isAnyLoading ? (
