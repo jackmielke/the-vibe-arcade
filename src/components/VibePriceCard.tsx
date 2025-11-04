@@ -23,8 +23,10 @@ interface TokenData {
   };
 }
 
-const formatNumber = (num: string | number) => {
+const formatNumber = (num: string | number | null | undefined) => {
+  if (!num || num === null || num === undefined) return "-.--";
   const value = typeof num === 'string' ? parseFloat(num) : num;
+  if (isNaN(value)) return "-.--";
   if (value >= 1e9) return `$${(value / 1e9).toFixed(2)}B`;
   if (value >= 1e6) return `$${(value / 1e6).toFixed(2)}M`;
   if (value >= 1e3) return `$${(value / 1e3).toFixed(2)}K`;
