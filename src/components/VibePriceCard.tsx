@@ -58,10 +58,7 @@ export const VibePriceCard = () => {
 
   const tokenData = data?.data?.attributes;
   const fdv = tokenData?.fdv_usd;
-  const priceChange = tokenData?.price_change_percentage?.h24;
   const displayFdv = fdv ? formatNumber(fdv) : "-.--";
-  const displayPriceChange = priceChange ? parseFloat(priceChange).toFixed(2) : "0.00";
-  const isPositive = priceChange && parseFloat(priceChange) >= 0;
 
   return (
     <HoverCard>
@@ -70,9 +67,6 @@ export const VibePriceCard = () => {
           <div className="text-xs text-muted-foreground uppercase tracking-wider">$VIBE</div>
           <div className="text-2xl font-bold text-primary">
             {isLoading ? "..." : displayFdv}
-          </div>
-          <div className={`text-xs font-medium ${isPositive ? 'text-accent' : 'text-destructive'}`}>
-            {isLoading ? "..." : `${isPositive ? '+' : ''}${displayPriceChange}%`}
           </div>
         </div>
       </HoverCardTrigger>
@@ -92,10 +86,6 @@ export const VibePriceCard = () => {
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Market Cap:</span>
-                <span className="font-medium text-foreground">{formatNumber(tokenData.market_cap_usd)}</span>
-              </div>
-              <div className="flex justify-between">
                 <span className="text-muted-foreground">24h Volume:</span>
                 <span className="font-medium text-foreground">
                   {formatNumber(tokenData.volume_usd?.h24 || "0")}
@@ -108,7 +98,7 @@ export const VibePriceCard = () => {
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Total Supply:</span>
                 <span className="font-medium text-foreground">
-                  {formatSupply(tokenData.total_supply)}
+                  {formatNumber(tokenData.total_supply)}
                 </span>
               </div>
               <div className="pt-2 border-t border-glass-border/20">
@@ -118,7 +108,7 @@ export const VibePriceCard = () => {
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2 text-sm text-accent hover:text-accent/80 transition-colors"
                 >
-                  View on Long
+                  View on LONG
                   <ExternalLink className="h-3 w-3" />
                 </a>
               </div>
