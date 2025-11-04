@@ -1,8 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { ExternalLink } from "lucide-react";
 
 const VIBE_CONTRACT = "0x7255ecf1020a95fed5323dd4feb23a54ab1aa7d1";
 const GECKO_API = "https://api.geckoterminal.com/api/v2";
+const VIBE_LINK = "https://app.long.xyz/tokens/0x7255ecf1020a95fed5323dd4feb23a54ab1aa7d1?graph=graduated";
 
 interface TokenData {
   data: {
@@ -33,6 +35,13 @@ const formatNumber = (num: string | number | null | undefined) => {
   return `$${value.toFixed(2)}`;
 };
 
+const formatSupply = (num: string | null | undefined) => {
+  if (!num) return "-.--";
+  const value = parseFloat(num);
+  if (isNaN(value)) return "-.--";
+  return value.toLocaleString(undefined, { maximumFractionDigits: 0 });
+};
+
 export const VibePriceCard = () => {
   const { data, isLoading } = useQuery({
     queryKey: ['vibe-token'],
@@ -48,9 +57,9 @@ export const VibePriceCard = () => {
   });
 
   const tokenData = data?.data?.attributes;
-  const marketCap = tokenData?.market_cap_usd;
+  const fdv = tokenData?.fdv_usd;
   const priceChange = tokenData?.price_change_percentage?.h24;
-  const displayMarketCap = marketCap ? formatNumber(marketCap) : "-.--";
+  const displayFdv = fdv ? formatNumber(fdv) : "-.--";
   const displayPriceChange = priceChange ? parseFloat(priceChange).toFixed(2) : "0.00";
   const isPositive = priceChange && parseFloat(priceChange) >= 0;
 
@@ -60,7 +69,7 @@ export const VibePriceCard = () => {
         <div className="inline-flex items-center gap-3 bg-glass/10 backdrop-blur-xl border border-glass-border/20 rounded-full px-4 py-2 shadow-[var(--glass-glow)] hover:bg-glass/20 transition-all cursor-pointer">
           <div className="text-xs text-muted-foreground uppercase tracking-wider">$VIBE</div>
           <div className="text-2xl font-bold text-primary">
-            {isLoading ? "..." : displayMarketCap}
+            {isLoading ? "..." : displayFdv}
           </div>
           <div className={`text-xs font-medium ${isPositive ? 'text-accent' : 'text-destructive'}`}>
             {isLoading ? "..." : `${isPositive ? '+' : ''}${displayPriceChange}%`}
@@ -99,8 +108,19 @@ export const VibePriceCard = () => {
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Total Supply:</span>
                 <span className="font-medium text-foreground">
-                  {parseFloat(tokenData.total_supply).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                  {formatSupply(tokenData.total_supply)}
                 </span>
+              </div>
+              <div className="pt-2 border-t border-glass-border/20">
+                <a
+                  href={VIBE_LINK}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 text-sm text-accent hover:text-accent/80 transition-colors"
+                >
+                  View on Long
+                  <ExternalLink className="h-3 w-3" />
+                </a>
               </div>
             </div>
           ) : (
