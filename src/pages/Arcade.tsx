@@ -1,5 +1,4 @@
 import { Header } from "@/components/Header";
-import { CategoryPills } from "@/components/CategoryPills";
 import { GameCard } from "@/components/GameCard";
 import galaxyBg from "@/assets/galaxy-bg.jpg";
 import { useQuery } from "@tanstack/react-query";
@@ -7,13 +6,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
 
 const Arcade = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState<'top' | 'recent'>('top');
 
   const { data: games = [], isLoading } = useQuery({
-    queryKey: ['games', selectedCategory],
+    queryKey: ['arcade-games', sortBy],
     queryFn: async () => {
-      // Build query based on category filter
-      let query = supabase
+      const { data, error } = await supabase
         .from('games')
         .select(`
           id,
@@ -24,19 +22,11 @@ const Arcade = () => {
           status,
           is_anonymous,
           creator_id,
-          profiles(username, avatar_url),
-          game_categories(
-            categories(slug)
-          )
+          created_at,
+          profiles(username, avatar_url)
         `)
-        .eq('status', 'approved');
-      
-      // If category is selected, filter by it
-      if (selectedCategory) {
-        query = query.eq('game_categories.categories.slug', selectedCategory);
-      }
-      
-      const { data, error } = await query.order('created_at', { ascending: false });
+        .eq('status', 'approved')
+        .order('created_at', { ascending: false });
       
       if (error) throw error;
       
@@ -55,8 +45,18 @@ const Arcade = () => {
           };
         })
       );
-      
-      return gamesWithCounts;
+
+      // Sort based on selected sort type
+      if (sortBy === 'top') {
+        return gamesWithCounts.sort((a, b) => b.likeCount - a.likeCount);
+      } else {
+        // Sort by created_at (most recent first)
+        return gamesWithCounts.sort((a, b) => {
+          const dateA = new Date(a.created_at || 0).getTime();
+          const dateB = new Date(b.created_at || 0).getTime();
+          return dateB - dateA;
+        });
+      }
     },
   });
 
@@ -81,18 +81,45 @@ const Arcade = () => {
         
         <main className="max-w-7xl mx-auto px-4 md:px-6 py-24">
           <div className="mb-8">
-            <h1 className="text-4xl md:text-5xl font-black text-primary mb-3 tracking-tight">
-              ALL GAMES
-            </h1>
-            <p className="text-lg text-foreground/80">
-              Explore our complete collection of games
-            </p>
-          </div>
+            <div className="flex items-center justify-between gap-4 mb-6">
+              <div>
+                <h1 className="text-4xl md:text-5xl font-black text-primary mb-3 tracking-tight">
+                  ALL GAMES
+                </h1>
+                <p className="text-lg text-foreground/80">
+                  Explore our complete collection of games
+                </p>
+              </div>
 
-          <CategoryPills 
-            selectedCategory={selectedCategory}
-            onCategoryChange={setSelectedCategory}
-          />
+              {/* Sort Buttons */}
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setSortBy('top')}
+                  className={`
+                    px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-all
+                    ${sortBy === 'top'
+                      ? 'bg-foreground/10 text-foreground' 
+                      : 'bg-transparent text-foreground/60 hover:text-foreground hover:bg-foreground/5'
+                    }
+                  `}
+                >
+                  Top Games
+                </button>
+                <button
+                  onClick={() => setSortBy('recent')}
+                  className={`
+                    px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-all
+                    ${sortBy === 'recent'
+                      ? 'bg-foreground/10 text-foreground' 
+                      : 'bg-transparent text-foreground/60 hover:text-foreground hover:bg-foreground/5'
+                    }
+                  `}
+                >
+                  Most Recent
+                </button>
+              </div>
+            </div>
+          </div>
 
           {isLoading ? (
             <div className="text-center py-16 text-muted-foreground">Loading...</div>
