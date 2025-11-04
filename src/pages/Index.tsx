@@ -19,7 +19,7 @@ const Index = () => {
   const navigate = useNavigate();
   const [selectedNFTId, setSelectedNFTId] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [sortBy, setSortBy] = useState<'top' | 'recent'>('recent');
+  const [sortBy, setSortBy] = useState<'top' | 'recent'>('top');
   
   const { data: games = [], isLoading } = useQuery({
     queryKey: ['games', selectedCategory, sortBy],
@@ -169,18 +169,6 @@ const Index = () => {
             {/* Sort Buttons */}
             <div className="flex gap-3">
               <button
-                onClick={() => setSortBy('recent')}
-                className={`
-                  px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-all
-                  ${sortBy === 'recent'
-                    ? 'bg-foreground/10 text-foreground' 
-                    : 'bg-transparent text-foreground/60 hover:text-foreground hover:bg-foreground/5'
-                  }
-                `}
-              >
-                Most Recent
-              </button>
-              <button
                 onClick={() => setSortBy('top')}
                 className={`
                   px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-all
@@ -191,6 +179,18 @@ const Index = () => {
                 `}
               >
                 Top Games
+              </button>
+              <button
+                onClick={() => setSortBy('recent')}
+                className={`
+                  px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-all
+                  ${sortBy === 'recent'
+                    ? 'bg-foreground/10 text-foreground' 
+                    : 'bg-transparent text-foreground/60 hover:text-foreground hover:bg-foreground/5'
+                  }
+                `}
+              >
+                Most Recent
               </button>
             </div>
 
