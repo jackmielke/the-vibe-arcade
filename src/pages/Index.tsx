@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { SubmitGameDialog } from "@/components/SubmitGameDialog";
 import { VibePriceCard } from "@/components/VibePriceCard";
-import { BuildathonCountdown } from "@/components/BuildathonCountdown";
 import { GameCard } from "@/components/GameCard";
 import { PlayerAvatar } from "@/components/PlayerAvatar";
 import { CreateCharacterDialog } from "@/components/CreateCharacterDialog";
@@ -150,10 +149,7 @@ const Index = () => {
           <section className="pt-24 pb-8">
             <div className="max-w-7xl mx-auto px-4 md:px-6">
               <div className="max-w-md space-y-6">
-              <div className="flex items-center gap-3 flex-wrap mb-6">
-                <VibePriceCard />
-                <BuildathonCountdown />
-              </div>
+              <VibePriceCard />
               
               <h2 className="text-2xl md:text-3xl font-zen-dots text-primary mb-3 tracking-tight">
                 Play & Build
