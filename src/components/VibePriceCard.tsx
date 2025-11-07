@@ -1,7 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ExternalLink, AlertCircle } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const VIBE_CONTRACT = "0x7255ecf1020a95fed5323dd4feb23a54ab1aa7d1";
 const GECKO_API = "https://api.geckoterminal.com/api/v2";
@@ -44,6 +46,7 @@ const formatSupply = (num: string | null | undefined) => {
 };
 
 export const VibePriceCard = () => {
+  const isMobile = useIsMobile();
   const { data, isLoading, isError } = useQuery({
     queryKey: ['vibe-token'],
     queryFn: async () => {
@@ -82,63 +85,86 @@ export const VibePriceCard = () => {
     );
   }
 
+  const triggerButton = (
+    <div className="inline-flex items-center gap-3 bg-glass/10 backdrop-blur-xl border border-glass-border/20 rounded-full px-4 py-2 shadow-[var(--glass-glow)] hover:bg-glass/20 transition-all cursor-pointer">
+      <div className="text-xs text-muted-foreground uppercase tracking-wider">$VIBE</div>
+      <div className="text-2xl font-bold text-primary">
+        {displayFdv}
+      </div>
+    </div>
+  );
+
+  const content = (
+    <div className="space-y-3">
+      <div>
+        <h4 className="text-sm font-semibold text-foreground mb-2">Token Metrics</h4>
+      </div>
+      {isLoading ? (
+        <div className="text-sm text-muted-foreground">Loading...</div>
+      ) : tokenData ? (
+        <div className="space-y-2 text-sm">
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Price:</span>
+            <span className="font-medium text-foreground">
+              ${parseFloat(tokenData.price_usd).toFixed(6)}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">24h Volume:</span>
+            <span className="font-medium text-foreground">
+              {formatNumber(tokenData.volume_usd?.h24 || "0")}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">FDV:</span>
+            <span className="font-medium text-foreground">{formatNumber(tokenData.fdv_usd)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Total Supply:</span>
+            <span className="font-medium text-foreground">
+              {formatNumber(tokenData.total_supply)}
+            </span>
+          </div>
+          <div className="pt-2 border-t border-glass-border/20">
+            <a
+              href={VIBE_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 text-sm text-accent hover:text-accent/80 transition-colors"
+            >
+              View on LONG
+              <ExternalLink className="h-3 w-3" />
+            </a>
+          </div>
+        </div>
+      ) : (
+        <div className="text-sm text-muted-foreground">No data available</div>
+      )}
+    </div>
+  );
+
+  if (isMobile) {
+    return (
+      <Drawer>
+        <DrawerTrigger asChild>
+          {triggerButton}
+        </DrawerTrigger>
+        <DrawerContent className="bg-glass/95 backdrop-blur-xl border-glass-border/40">
+          <div className="p-4">
+            {content}
+          </div>
+        </DrawerContent>
+      </Drawer>
+    );
+  }
+
   return (
     <HoverCard>
       <HoverCardTrigger asChild>
-        <div className="inline-flex items-center gap-3 bg-glass/10 backdrop-blur-xl border border-glass-border/20 rounded-full px-4 py-2 shadow-[var(--glass-glow)] hover:bg-glass/20 transition-all cursor-pointer">
-          <div className="text-xs text-muted-foreground uppercase tracking-wider">$VIBE</div>
-          <div className="text-2xl font-bold text-primary">
-            {displayFdv}
-          </div>
-        </div>
+        {triggerButton}
       </HoverCardTrigger>
       <HoverCardContent className="w-80 bg-glass/95 backdrop-blur-xl border-glass-border/40">
-        <div className="space-y-3">
-          <div>
-            <h4 className="text-sm font-semibold text-foreground mb-2">Token Metrics</h4>
-          </div>
-          {isLoading ? (
-            <div className="text-sm text-muted-foreground">Loading...</div>
-          ) : tokenData ? (
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Price:</span>
-                <span className="font-medium text-foreground">
-                  ${parseFloat(tokenData.price_usd).toFixed(6)}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">24h Volume:</span>
-                <span className="font-medium text-foreground">
-                  {formatNumber(tokenData.volume_usd?.h24 || "0")}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">FDV:</span>
-                <span className="font-medium text-foreground">{formatNumber(tokenData.fdv_usd)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Total Supply:</span>
-                <span className="font-medium text-foreground">
-                  {formatNumber(tokenData.total_supply)}
-                </span>
-              </div>
-              <div className="pt-2 border-t border-glass-border/20">
-                <a
-                  href={VIBE_LINK}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 text-sm text-accent hover:text-accent/80 transition-colors"
-                >
-                  View on LONG
-                  <ExternalLink className="h-3 w-3" />
-                </a>
-              </div>
-            </div>
-          ) : (
-            <div className="text-sm text-muted-foreground">No data available</div>
-          )}
-        </div>
+        {content}
       </HoverCardContent>
     </HoverCard>
   );
