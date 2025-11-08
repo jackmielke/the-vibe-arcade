@@ -64,7 +64,7 @@ serve(async (req) => {
         vesting_recipients: [
           {
             address: walletAddress,
-            percentage: 35
+            amount: 350000000
           }
         ],
         fee_receiver: walletAddress,
