@@ -14,17 +14,23 @@ serve(async (req) => {
   }
 
   try {
-    const { imageFile, title, description, ticker, walletAddress } = await req.json();
+    const { imageUrl, title, description, ticker, walletAddress } = await req.json();
 
     console.log('Starting token launch process for:', ticker);
 
-    // Step 1: Upload image to IPFS
-    console.log('Step 1: Uploading image to IPFS...');
+    // Step 1: Fetch image from URL and upload to IPFS
+    console.log('Step 1: Fetching image from URL...');
+    const imageResponse = await fetch(imageUrl);
+    if (!imageResponse.ok) {
+      throw new Error(`Failed to fetch image: ${imageResponse.statusText}`);
+    }
+    const imageBlob = await imageResponse.blob();
+    
+    console.log('Step 1b: Uploading image to IPFS...');
     const imageFormData = new FormData();
-    const imageBlob = new Blob([Uint8Array.from(atob(imageFile.split(',')[1]), c => c.charCodeAt(0))], { type: 'image/png' });
     imageFormData.append('file', imageBlob, 'image.png');
 
-    const imageResponse = await fetch('https://api.long.xyz/ipfs/upload-image', {
+    const ipfsImageResponse = await fetch('https://api.long.xyz/ipfs/upload-image', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${LONG_API_KEY}`,
@@ -32,13 +38,13 @@ serve(async (req) => {
       body: imageFormData,
     });
 
-    if (!imageResponse.ok) {
-      const errorText = await imageResponse.text();
+    if (!ipfsImageResponse.ok) {
+      const errorText = await ipfsImageResponse.text();
       console.error('Image upload failed:', errorText);
       throw new Error(`Failed to upload image: ${errorText}`);
     }
 
-    const imageData = await imageResponse.json();
+    const imageData = await ipfsImageResponse.json();
     const imageHash = imageData.hash;
     console.log('Image uploaded, hash:', imageHash);
 

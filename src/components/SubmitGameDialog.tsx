@@ -155,7 +155,7 @@ export const SubmitGameDialog = () => {
 
         const { data: tokenResult, error: tokenError } = await supabase.functions.invoke('launch-token', {
           body: {
-            imageFile: thumbnailUrl,
+            imageUrl: thumbnailUrl,
             title,
             description: description || `Token for ${title}`,
             ticker: tokenTicker,
