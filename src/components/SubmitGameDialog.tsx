@@ -35,8 +35,7 @@ export const SubmitGameDialog = () => {
   const [isLaunchingToken, setIsLaunchingToken] = useState(false);
   const [tokenLaunchSuccess, setTokenLaunchSuccess] = useState<{
     token_address: string;
-    hook_address: string;
-    encoded_payload: string;
+    tx_hash: string;
   } | null>(null);
 
   // Auto-fetch metadata when URL is pasted or changed
@@ -167,19 +166,19 @@ export const SubmitGameDialog = () => {
         if (tokenError) throw tokenError;
         if (!tokenResult.success) throw new Error(tokenResult.error);
 
-        setTokenProgressText("Token payload encoded!");
+        setTokenProgressText("Token launched successfully!");
         setTokenProgress(100);
         
         tokenData = {
           token_address: tokenResult.token_address,
           token_ticker: tokenTicker,
+          token_tx_hash: tokenResult.tx_hash,
           token_launched_at: new Date().toISOString(),
         };
 
         setTokenLaunchSuccess({
           token_address: tokenResult.token_address,
-          hook_address: tokenResult.hook_address,
-          encoded_payload: tokenResult.encoded_payload,
+          tx_hash: tokenResult.tx_hash,
         });
       }
 
@@ -272,31 +271,40 @@ export const SubmitGameDialog = () => {
               <div className="rounded-full bg-green-500/20 p-3">
                 <CheckCircle2 className="h-12 w-12 text-green-500" />
               </div>
-              <h3 className="text-2xl font-bold">Token Encoded!</h3>
+              <h3 className="text-2xl font-bold">Token Launched!</h3>
               <p className="text-center text-muted-foreground">
-                Game submitted! Token payload ready for deployment via your wallet.
+                Your token has been successfully deployed to Base blockchain!
               </p>
             </div>
 
             <div className="space-y-3 rounded-lg border border-border p-4 bg-muted/50">
               <div>
-                <p className="text-sm text-muted-foreground">Token Address (Pre-computed)</p>
+                <p className="text-sm text-muted-foreground">Token Address</p>
                 <p className="font-mono text-sm break-all">{tokenLaunchSuccess.token_address}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Hook Address</p>
-                <p className="font-mono text-sm break-all">{tokenLaunchSuccess.hook_address}</p>
+                <p className="text-sm text-muted-foreground">Transaction Hash</p>
+                <p className="font-mono text-sm break-all">{tokenLaunchSuccess.tx_hash}</p>
               </div>
             </div>
 
             <div className="flex gap-2">
               <Button
                 type="button"
+                variant="outline"
+                className="flex-1"
+                onClick={() => window.open(`https://basescan.org/tx/${tokenLaunchSuccess.tx_hash}`, '_blank')}
+              >
+                <ExternalLink className="mr-2 h-4 w-4" />
+                View on BaseScan
+              </Button>
+              <Button
+                type="button"
                 className="flex-1"
                 onClick={() => window.open(`https://app.long.xyz/tokens/${tokenLaunchSuccess.token_address}`, '_blank')}
               >
                 <Rocket className="mr-2 h-4 w-4" />
-                View on LONG
+                Trade on LONG
               </Button>
             </div>
 

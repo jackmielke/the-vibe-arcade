@@ -120,14 +120,34 @@ serve(async (req) => {
     const hookAddress = auctionData.result?.hook_address;
     const encodedPayload = auctionData.result?.encoded_payload;
 
-    console.log('Token encoding complete. Payload ready for wallet signature.');
+    // Step 4: Broadcast transaction with gas sponsorship
+    console.log('Step 4: Broadcasting transaction with gas sponsorship...');
+    const sponsorshipResponse = await fetch('https://api.long.xyz/v1/sponsorship', {
+      method: 'POST',
+      headers: {
+        'X-API-KEY': LONG_API_KEY,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        encoded_payload: encodedPayload,
+      }),
+    });
+
+    if (!sponsorshipResponse.ok) {
+      const errorText = await sponsorshipResponse.text();
+      console.error('Sponsorship broadcast failed:', errorText);
+      throw new Error(`Failed to broadcast transaction: ${errorText}`);
+    }
+
+    const sponsorshipData = await sponsorshipResponse.json();
+    const txHash = sponsorshipData.result?.transaction_hash;
+    console.log('Transaction broadcasted, hash:', txHash);
 
     return new Response(
       JSON.stringify({
         success: true,
         token_address: tokenAddress,
-        hook_address: hookAddress,
-        encoded_payload: encodedPayload,
+        tx_hash: txHash,
         image_hash: imageHash,
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
