@@ -83,7 +83,7 @@ serve(async (req) => {
 
     // Step 3: Create auction using template
     console.log('Step 3: Creating auction with template...');
-    const auctionResponse = await fetch('https://api.long.xyz/v1/auctions/create-dynamic', {
+    const auctionResponse = await fetch('https://api.long.xyz/v1/auctions?chainId=8453', {
       method: 'POST',
       headers: {
         'X-API-KEY': LONG_API_KEY,
@@ -96,8 +96,7 @@ serve(async (req) => {
           token_symbol: ticker,
           token_uri: `ipfs://${metadataHash}`,
           user_address: walletAddress
-        },
-        chainId: 8453, // Base Mainnet
+        }
       }),
     });
 
