@@ -91,6 +91,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         template_id: AUCTION_TEMPLATE_ID,
+        debug: true, // Enable debug to get token_address in response
         metadata: {
           token_name: title,
           token_symbol: ticker,
@@ -117,8 +118,14 @@ serve(async (req) => {
 
     // Extract token address and encoded payload from response
     const tokenAddress = auctionData.result?.token_address;
-    const hookAddress = auctionData.result?.hook_address;
     const encodedPayload = auctionData.result?.encoded_payload;
+
+    if (!tokenAddress || !encodedPayload) {
+      console.error('Missing data in auction response:', auctionData);
+      throw new Error('Missing token_address or encoded_payload in response');
+    }
+
+    console.log('Token address (pre-computed):', tokenAddress);
 
     // Step 4: Broadcast transaction with gas sponsorship
     console.log('Step 4: Broadcasting transaction with gas sponsorship...');
@@ -141,6 +148,12 @@ serve(async (req) => {
 
     const sponsorshipData = await sponsorshipResponse.json();
     const txHash = sponsorshipData.result?.transaction_hash;
+    
+    if (!txHash) {
+      console.error('Missing transaction hash in sponsorship response:', sponsorshipData);
+      throw new Error('Missing transaction_hash in sponsorship response');
+    }
+    
     console.log('Transaction broadcasted, hash:', txHash);
 
     return new Response(

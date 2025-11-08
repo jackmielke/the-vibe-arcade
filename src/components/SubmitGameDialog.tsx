@@ -150,8 +150,8 @@ export const SubmitGameDialog = () => {
       // Launch token if requested
       if (launchToken) {
         setIsLaunchingToken(true);
-        setTokenProgressText("Uploading image to IPFS...");
-        setTokenProgress(25);
+        setTokenProgressText("Encoding auction...");
+        setTokenProgress(50);
 
         const { data: tokenResult, error: tokenError } = await supabase.functions.invoke('launch-token', {
           body: {
@@ -271,7 +271,7 @@ export const SubmitGameDialog = () => {
               <div className="rounded-full bg-green-500/20 p-3">
                 <CheckCircle2 className="h-12 w-12 text-green-500" />
               </div>
-              <h3 className="text-2xl font-bold">Token Launched!</h3>
+              <h3 className="text-2xl font-bold">Token Launched Successfully!</h3>
               <p className="text-center text-muted-foreground">
                 Your token has been successfully deployed to Base blockchain!
               </p>
