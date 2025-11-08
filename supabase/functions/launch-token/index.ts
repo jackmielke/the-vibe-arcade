@@ -120,12 +120,35 @@ serve(async (req) => {
     const hookAddress = auctionData.result?.hook_address;
     const encodedPayload = auctionData.result?.encoded_payload;
 
+    // Step 4: Deploy the auction to Base blockchain
+    console.log('Step 4: Deploying auction to blockchain...');
+    const deployResponse = await fetch('https://api.long.xyz/v1/auctions/deploy', {
+      method: 'POST',
+      headers: {
+        'X-API-KEY': LONG_API_KEY,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        chain_id: 8453,
+        encoded_payload: encodedPayload,
+      }),
+    });
+
+    if (!deployResponse.ok) {
+      const errorText = await deployResponse.text();
+      console.error('Deployment failed:', errorText);
+      throw new Error(`Failed to deploy auction: ${errorText}`);
+    }
+
+    const deployData = await deployResponse.json();
+    const txHash = deployData.result?.tx_hash || deployData.result?.transaction_hash;
+    console.log('Token deployed, tx hash:', txHash);
+
     return new Response(
       JSON.stringify({
         success: true,
         token_address: tokenAddress,
-        hook_address: hookAddress,
-        encoded_payload: encodedPayload,
+        tx_hash: txHash,
         image_hash: imageHash,
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
