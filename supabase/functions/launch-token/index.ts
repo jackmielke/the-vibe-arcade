@@ -114,14 +114,17 @@ serve(async (req) => {
     }
 
     const auctionData = await auctionResponse.json();
-    console.log('Auction encoded:', auctionData);
+    console.log('Auction response (full):', JSON.stringify(auctionData, null, 2));
 
     // Extract token address and encoded payload from response
     const tokenAddress = auctionData.result?.token_address;
     const encodedPayload = auctionData.result?.encoded_payload;
 
+    console.log('Extracted token_address:', tokenAddress);
+    console.log('Extracted encoded_payload length:', encodedPayload?.length);
+
     if (!tokenAddress || !encodedPayload) {
-      console.error('Missing data in auction response:', auctionData);
+      console.error('Missing data in auction response. Result object:', auctionData.result);
       throw new Error('Missing token_address or encoded_payload in response');
     }
 
