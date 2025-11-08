@@ -160,6 +160,7 @@ export const SubmitGameDialog = () => {
             description: description || `Token for ${title}`,
             ticker: tokenTicker,
             walletAddress,
+            playUrl,
           }
         });
 
@@ -480,7 +481,7 @@ export const SubmitGameDialog = () => {
                   required={launchToken}
                 />
                 <p className="text-xs text-muted-foreground">
-                  35% of token supply will be allocated to this address
+                  35% of the trading fees and 10% of the token supply will be allocated to this address
                 </p>
               </div>
 

@@ -14,7 +14,7 @@ serve(async (req) => {
   }
 
   try {
-    const { imageUrl, title, description, ticker, walletAddress } = await req.json();
+    const { imageUrl, title, description, ticker, walletAddress, playUrl } = await req.json();
 
     console.log('Starting token launch process for:', ticker);
 
@@ -60,7 +60,12 @@ serve(async (req) => {
         name: title,
         description: description || `Token for ${title}`,
         image_hash: imageHash,
-        social_links: [],
+        social_links: playUrl ? [
+          {
+            label: "website",
+            url: playUrl
+          }
+        ] : [],
         vesting_recipients: [
           {
             address: walletAddress,
