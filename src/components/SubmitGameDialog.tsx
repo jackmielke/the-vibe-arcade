@@ -36,6 +36,7 @@ export const SubmitGameDialog = () => {
   const [tokenLaunchSuccess, setTokenLaunchSuccess] = useState<{
     token_address: string;
     tx_hash: string;
+    game_id: string;
   } | null>(null);
 
   // Auto-fetch metadata when URL is pasted or changed
@@ -177,10 +178,7 @@ export const SubmitGameDialog = () => {
           token_launched_at: new Date().toISOString(),
         };
 
-        setTokenLaunchSuccess({
-          token_address: tokenResult.token_address,
-          tx_hash: tokenResult.tx_hash,
-        });
+        // Store game ID for later navigation - will be set after game insert
       }
 
       // Get current user session
@@ -219,6 +217,13 @@ export const SubmitGameDialog = () => {
         if (data) {
           navigate(`/game/${data.id}`);
         }
+      } else if (data) {
+        // Set success state with game ID for token launch
+        setTokenLaunchSuccess({
+          token_address: tokenData?.token_address || '',
+          tx_hash: tokenData?.token_tx_hash || '',
+          game_id: data.id,
+        });
       }
     } catch (error) {
       console.error('Error submitting game:', error);
@@ -231,6 +236,8 @@ export const SubmitGameDialog = () => {
   };
 
   const handleSuccessClose = () => {
+    const gameId = tokenLaunchSuccess?.game_id;
+    
     // Reset form
     setPlayUrl("");
     setTitle("");
@@ -245,6 +252,11 @@ export const SubmitGameDialog = () => {
     setTokenProgress(0);
     setTokenProgressText("");
     setOpen(false);
+    
+    // Navigate to game page
+    if (gameId) {
+      navigate(`/game/${gameId}`);
+    }
   };
 
   return (
