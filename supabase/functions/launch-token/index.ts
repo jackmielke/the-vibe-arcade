@@ -95,7 +95,13 @@ serve(async (req) => {
           token_name: title,
           token_symbol: ticker,
           token_uri: `ipfs://${metadataHash}`,
-          user_address: walletAddress
+          user_address: walletAddress,
+          beneficiaries: [
+            {
+              beneficiary: walletAddress,
+              shares: "350000000000000000" // 35% in WAD format
+            }
+          ]
         }
       }),
     });
