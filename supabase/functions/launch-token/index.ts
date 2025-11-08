@@ -81,9 +81,9 @@ serve(async (req) => {
     const metadataHash = metadataData.result;
     console.log('Metadata uploaded, hash:', metadataHash);
 
-    // Step 3: Create auction using template
-    console.log('Step 3: Creating auction with template...');
-    const auctionResponse = await fetch('https://api.long.xyz/v1/auctions?chainId=8453', {
+    // Step 3: Encode auction using template
+    console.log('Step 3: Encoding auction with template...');
+    const auctionResponse = await fetch('https://api.long.xyz/v1/auction-templates?chainId=8453', {
       method: 'POST',
       headers: {
         'X-API-KEY': LONG_API_KEY,
@@ -107,17 +107,19 @@ serve(async (req) => {
     }
 
     const auctionData = await auctionResponse.json();
-    console.log('Auction created:', auctionData);
+    console.log('Auction encoded:', auctionData);
 
-    // Extract token address and tx hash from auction response
-    const tokenAddress = auctionData.result?.auction_base_token_address || auctionData.token_address;
-    const txHash = auctionData.result?.tx_hash || auctionData.tx_hash;
+    // Extract token address and encoded payload from response
+    const tokenAddress = auctionData.result?.token_address;
+    const hookAddress = auctionData.result?.hook_address;
+    const encodedPayload = auctionData.result?.encoded_payload;
 
     return new Response(
       JSON.stringify({
         success: true,
         token_address: tokenAddress,
-        tx_hash: txHash,
+        hook_address: hookAddress,
+        encoded_payload: encodedPayload,
         image_hash: imageHash,
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
