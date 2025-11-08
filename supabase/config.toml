@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.fetch-metadata]
 verify_jwt = false
+
+[functions.launch-token]
+verify_jwt = false

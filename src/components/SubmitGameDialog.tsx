@@ -6,9 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Loader2, Upload, X } from "lucide-react";
+import { Plus, Loader2, Upload, X, Rocket, ExternalLink, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { Progress } from "@/components/ui/progress";
 
 export const SubmitGameDialog = () => {
   const navigate = useNavigate();
@@ -24,6 +25,18 @@ export const SubmitGameDialog = () => {
   const [thumbnailUrl, setThumbnailUrl] = useState("");
   const [codebaseUrl, setCodebaseUrl] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(false);
+  
+  // Token launch states
+  const [launchToken, setLaunchToken] = useState(false);
+  const [tokenTicker, setTokenTicker] = useState("");
+  const [walletAddress, setWalletAddress] = useState("");
+  const [tokenProgress, setTokenProgress] = useState(0);
+  const [tokenProgressText, setTokenProgressText] = useState("");
+  const [isLaunchingToken, setIsLaunchingToken] = useState(false);
+  const [tokenLaunchSuccess, setTokenLaunchSuccess] = useState<{
+    tx_hash: string;
+    token_address: string;
+  } | null>(null);
 
   // Auto-fetch metadata when URL is pasted or changed
   useEffect(() => {
@@ -120,8 +133,55 @@ export const SubmitGameDialog = () => {
       return;
     }
 
+    if (launchToken && (!tokenTicker || !walletAddress)) {
+      toast.error("Token ticker and wallet address are required for token launch");
+      return;
+    }
+
+    if (launchToken && !thumbnailUrl) {
+      toast.error("Cover image is required for token launch");
+      return;
+    }
+
     setIsLoading(true);
+    let tokenData = null;
+
     try {
+      // Launch token if requested
+      if (launchToken) {
+        setIsLaunchingToken(true);
+        setTokenProgressText("Uploading image to IPFS...");
+        setTokenProgress(25);
+
+        const { data: tokenResult, error: tokenError } = await supabase.functions.invoke('launch-token', {
+          body: {
+            imageFile: thumbnailUrl,
+            title,
+            description: description || `Token for ${title}`,
+            ticker: tokenTicker,
+            walletAddress,
+          }
+        });
+
+        if (tokenError) throw tokenError;
+        if (!tokenResult.success) throw new Error(tokenResult.error);
+
+        setTokenProgressText("Token launched successfully!");
+        setTokenProgress(100);
+        
+        tokenData = {
+          token_address: tokenResult.token_address,
+          token_ticker: tokenTicker,
+          token_tx_hash: tokenResult.tx_hash,
+          token_launched_at: new Date().toISOString(),
+        };
+
+        setTokenLaunchSuccess({
+          tx_hash: tokenResult.tx_hash,
+          token_address: tokenResult.token_address,
+        });
+      }
+
       // Get current user session
       const { data: { session } } = await supabase.auth.getSession();
       
@@ -133,32 +193,57 @@ export const SubmitGameDialog = () => {
         codebase_url: codebaseUrl || null,
         creator_id: session?.user?.id || null,
         is_anonymous: isAnonymous,
-        status: 'approved'
+        status: 'approved',
+        ...tokenData,
       }).select().single();
 
       if (error) throw error;
 
-      toast.success("Game submitted successfully! It will be reviewed soon.");
-      
-      // Reset form
-      setPlayUrl("");
-      setTitle("");
-      setDescription("");
-      setThumbnailUrl("");
-      setCodebaseUrl("");
-      setIsAnonymous(false);
-      setOpen(false);
+      if (!launchToken) {
+        toast.success("Game submitted successfully!");
+        
+        // Reset form
+        setPlayUrl("");
+        setTitle("");
+        setDescription("");
+        setThumbnailUrl("");
+        setCodebaseUrl("");
+        setIsAnonymous(false);
+        setLaunchToken(false);
+        setTokenTicker("");
+        setWalletAddress("");
+        setOpen(false);
 
-      // Navigate to the game page
-      if (data) {
-        navigate(`/game/${data.id}`);
+        // Navigate to the game page
+        if (data) {
+          navigate(`/game/${data.id}`);
+        }
       }
     } catch (error) {
       console.error('Error submitting game:', error);
       toast.error("Failed to submit game. Please try again.");
+      setTokenLaunchSuccess(null);
     } finally {
       setIsLoading(false);
+      setIsLaunchingToken(false);
     }
+  };
+
+  const handleSuccessClose = () => {
+    // Reset form
+    setPlayUrl("");
+    setTitle("");
+    setDescription("");
+    setThumbnailUrl("");
+    setCodebaseUrl("");
+    setIsAnonymous(false);
+    setLaunchToken(false);
+    setTokenTicker("");
+    setWalletAddress("");
+    setTokenLaunchSuccess(null);
+    setTokenProgress(0);
+    setTokenProgressText("");
+    setOpen(false);
   };
 
   return (
@@ -175,9 +260,65 @@ export const SubmitGameDialog = () => {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>Submit a Game</DialogTitle>
+          <DialogTitle>
+            {tokenLaunchSuccess ? "Token Launched Successfully!" : "Submit a Game"}
+          </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        
+        {tokenLaunchSuccess ? (
+          <div className="space-y-6 py-4">
+            <div className="flex flex-col items-center justify-center space-y-4">
+              <div className="rounded-full bg-green-500/20 p-3">
+                <CheckCircle2 className="h-12 w-12 text-green-500" />
+              </div>
+              <h3 className="text-2xl font-bold">Token Launched!</h3>
+              <p className="text-center text-muted-foreground">
+                Your token has been successfully created and is now live on Base
+              </p>
+            </div>
+
+            <div className="space-y-3 rounded-lg border border-border p-4 bg-muted/50">
+              <div>
+                <p className="text-sm text-muted-foreground">Token Address</p>
+                <p className="font-mono text-sm break-all">{tokenLaunchSuccess.token_address}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Transaction Hash</p>
+                <p className="font-mono text-sm break-all">{tokenLaunchSuccess.tx_hash}</p>
+              </div>
+            </div>
+
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                className="flex-1"
+                onClick={() => window.open(`https://basescan.org/tx/${tokenLaunchSuccess.tx_hash}`, '_blank')}
+              >
+                <ExternalLink className="mr-2 h-4 w-4" />
+                View on BaseScan
+              </Button>
+              <Button
+                type="button"
+                className="flex-1"
+                onClick={() => window.open(`https://app.long.xyz/tokens/${tokenLaunchSuccess.token_address}`, '_blank')}
+              >
+                <Rocket className="mr-2 h-4 w-4" />
+                Trade on LONG
+              </Button>
+            </div>
+
+            <Button
+              type="button"
+              variant="default"
+              className="w-full"
+              onClick={handleSuccessClose}
+            >
+              Close
+            </Button>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="playUrl">Game URL *</Label>
             <div className="flex gap-2">
@@ -298,6 +439,62 @@ export const SubmitGameDialog = () => {
             />
           </div>
 
+          <div className="flex items-center justify-between space-x-2 p-4 bg-glass/10 rounded-lg border border-glass-border/20">
+            <div className="space-y-0.5">
+              <Label htmlFor="launchToken" className="text-base flex items-center gap-2">
+                <Rocket className="h-4 w-4" />
+                Launch Token
+              </Label>
+              <p className="text-sm text-muted-foreground">
+                Create a token for your game on Base
+              </p>
+            </div>
+            <Switch
+              id="launchToken"
+              checked={launchToken}
+              onCheckedChange={setLaunchToken}
+            />
+          </div>
+
+          {launchToken && (
+            <div className="space-y-4 p-4 bg-muted/50 rounded-lg border border-border">
+              <div className="space-y-2">
+                <Label htmlFor="tokenTicker">Token Ticker *</Label>
+                <Input
+                  id="tokenTicker"
+                  placeholder="e.g., GAME"
+                  value={tokenTicker}
+                  onChange={(e) => setTokenTicker(e.target.value.toUpperCase())}
+                  required={launchToken}
+                  maxLength={10}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="walletAddress">Wallet Address *</Label>
+                <Input
+                  id="walletAddress"
+                  placeholder="0x..."
+                  value={walletAddress}
+                  onChange={(e) => setWalletAddress(e.target.value)}
+                  required={launchToken}
+                />
+                <p className="text-xs text-muted-foreground">
+                  35% of token supply will be allocated to this address
+                </p>
+              </div>
+
+              {isLaunchingToken && (
+                <div className="space-y-2">
+                  <Progress value={tokenProgress} />
+                  <p className="text-sm text-center text-muted-foreground">
+                    {tokenProgressText}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Cancel
@@ -306,14 +503,18 @@ export const SubmitGameDialog = () => {
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Submitting...
+                  {isLaunchingToken ? "Launching Token..." : "Submitting..."}
                 </>
               ) : (
-                "Submit Game"
+                <>
+                  {launchToken && <Rocket className="mr-2 h-4 w-4" />}
+                  {launchToken ? "Submit & Launch Token" : "Submit Game"}
+                </>
               )}
             </Button>
           </div>
         </form>
+        )}
       </DialogContent>
     </Dialog>
   );

@@ -171,6 +171,10 @@ export type Database = {
           status: Database["public"]["Enums"]["game_status"]
           thumbnail_url: string | null
           title: string
+          token_address: string | null
+          token_launched_at: string | null
+          token_ticker: string | null
+          token_tx_hash: string | null
           updated_at: string
         }
         Insert: {
@@ -188,6 +192,10 @@ export type Database = {
           status?: Database["public"]["Enums"]["game_status"]
           thumbnail_url?: string | null
           title: string
+          token_address?: string | null
+          token_launched_at?: string | null
+          token_ticker?: string | null
+          token_tx_hash?: string | null
           updated_at?: string
         }
         Update: {
@@ -205,6 +213,10 @@ export type Database = {
           status?: Database["public"]["Enums"]["game_status"]
           thumbnail_url?: string | null
           title?: string
+          token_address?: string | null
+          token_launched_at?: string | null
+          token_ticker?: string | null
+          token_tx_hash?: string | null
           updated_at?: string
         }
         Relationships: [
