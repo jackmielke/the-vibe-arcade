@@ -315,7 +315,7 @@ export const SubmitGameDialog = () => {
               className="w-full"
               onClick={handleSuccessClose}
             >
-              Close
+              Visit game's page
             </Button>
           </div>
         ) : (
@@ -442,12 +442,12 @@ export const SubmitGameDialog = () => {
 
           <div className="flex items-center justify-between space-x-2 p-4 bg-glass/10 rounded-lg border border-glass-border/20">
             <div className="space-y-0.5">
-              <Label htmlFor="launchToken" className="text-base flex items-center gap-2">
+               <Label htmlFor="launchToken" className="text-base flex items-center gap-2">
                 <Rocket className="h-4 w-4" />
                 Launch Token
               </Label>
               <p className="text-sm text-muted-foreground">
-                Create a token for your game on Base
+                Create a token for your game on LONG
               </p>
             </div>
             <Switch
