@@ -5,7 +5,7 @@ import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
-import { ArrowLeft, ExternalLink, Code } from "lucide-react";
+import { ArrowLeft, ExternalLink, Code, Rocket } from "lucide-react";
 import galaxyBg from "@/assets/galaxy-bg.jpg";
 import { LikeButton } from "@/components/LikeButton";
 import { GameComments } from "@/components/GameComments";
@@ -133,6 +133,30 @@ const Game = () => {
                       <Code className="h-4 w-4" />
                       View Code
                     </Button>
+                  )}
+
+                  {game.token_address && (
+                    <>
+                      <Button 
+                        variant="default" 
+                        size="lg"
+                        className="gap-2"
+                        onClick={() => window.open(`https://app.long.xyz/tokens/${game.token_address}`, '_blank')}
+                      >
+                        <Rocket className="h-4 w-4" />
+                        Trade on LONG
+                      </Button>
+                      
+                      <Button 
+                        variant="outline" 
+                        size="lg"
+                        className="gap-2"
+                        onClick={() => window.open(`https://basescan.org/token/${game.token_address}`, '_blank')}
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                        View on BaseScan
+                      </Button>
+                    </>
                   )}
                 </div>
                 <LikeButton gameId={game.id} showCount={true} />
