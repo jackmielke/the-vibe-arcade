@@ -28,12 +28,12 @@ serve(async (req) => {
     
     console.log('Step 1b: Uploading image to IPFS...');
     const imageFormData = new FormData();
-    imageFormData.append('file', imageBlob, 'image.png');
+    imageFormData.append('image', imageBlob, 'image.png');
 
-    const ipfsImageResponse = await fetch('https://api.long.xyz/ipfs/upload-image', {
+    const ipfsImageResponse = await fetch('https://api.long.xyz/v1/ipfs/upload-image', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LONG_API_KEY}`,
+        'X-API-KEY': LONG_API_KEY,
       },
       body: imageFormData,
     });
@@ -45,22 +45,29 @@ serve(async (req) => {
     }
 
     const imageData = await ipfsImageResponse.json();
-    const imageHash = imageData.hash;
+    const imageHash = imageData.result;
     console.log('Image uploaded, hash:', imageHash);
 
     // Step 2: Upload metadata to IPFS
     console.log('Step 2: Uploading metadata to IPFS...');
-    const metadataResponse = await fetch('https://api.long.xyz/ipfs/upload-metadata', {
+    const metadataResponse = await fetch('https://api.long.xyz/v1/ipfs/upload-metadata', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LONG_API_KEY}`,
+        'X-API-KEY': LONG_API_KEY,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         name: title,
         description: description || `Token for ${title}`,
-        image: imageHash,
-        symbol: ticker,
+        image_hash: imageHash,
+        social_links: [],
+        vesting_recipients: [
+          {
+            address: walletAddress,
+            percentage: 35
+          }
+        ],
+        fee_receiver: walletAddress,
       }),
     });
 
@@ -71,68 +78,47 @@ serve(async (req) => {
     }
 
     const metadataData = await metadataResponse.json();
-    console.log('Metadata uploaded:', metadataData);
+    const metadataHash = metadataData.result;
+    console.log('Metadata uploaded, hash:', metadataHash);
 
-    // Step 3: Encode auction template
-    console.log('Step 3: Encoding auction template...');
-    const encodeResponse = await fetch('https://api.long.xyz/auction-templates/encode', {
+    // Step 3: Create auction using template
+    console.log('Step 3: Creating auction with template...');
+    const auctionResponse = await fetch('https://api.long.xyz/v1/auctions/create-dynamic', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LONG_API_KEY}`,
+        'X-API-KEY': LONG_API_KEY,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        auction_template_id: AUCTION_TEMPLATE_ID,
-        token_name: title,
-        token_symbol: ticker,
-        token_uri: metadataData.hash,
-        beneficiaries: [
-          {
-            shares: "350000000000000000",
-            beneficiary: walletAddress
-          }
-        ],
-        debug: true,
+        template_id: AUCTION_TEMPLATE_ID,
+        metadata: {
+          token_name: title,
+          token_symbol: ticker,
+          token_uri: `ipfs://${metadataHash}`,
+          user_address: walletAddress
+        },
+        chainId: 8453, // Base Mainnet
       }),
     });
 
-    if (!encodeResponse.ok) {
-      const errorText = await encodeResponse.text();
-      console.error('Encode failed:', errorText);
-      throw new Error(`Failed to encode template: ${errorText}`);
+    if (!auctionResponse.ok) {
+      const errorText = await auctionResponse.text();
+      console.error('Auction creation failed:', errorText);
+      throw new Error(`Failed to create auction: ${errorText}`);
     }
 
-    const encodeData = await encodeResponse.json();
-    const tokenAddress = encodeData.token_address;
-    console.log('Template encoded, token address:', tokenAddress);
+    const auctionData = await auctionResponse.json();
+    console.log('Auction created:', auctionData);
 
-    // Step 4: Broadcast transaction
-    console.log('Step 4: Broadcasting transaction...');
-    const broadcastResponse = await fetch('https://api.long.xyz/auction-templates/broadcast', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${LONG_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        encoded_payload: encodeData.encoded_payload,
-      }),
-    });
-
-    if (!broadcastResponse.ok) {
-      const errorText = await broadcastResponse.text();
-      console.error('Broadcast failed:', errorText);
-      throw new Error(`Failed to broadcast transaction: ${errorText}`);
-    }
-
-    const broadcastData = await broadcastResponse.json();
-    console.log('Transaction broadcasted:', broadcastData);
+    // Extract token address and tx hash from auction response
+    const tokenAddress = auctionData.result?.auction_base_token_address || auctionData.token_address;
+    const txHash = auctionData.result?.tx_hash || auctionData.tx_hash;
 
     return new Response(
       JSON.stringify({
         success: true,
         token_address: tokenAddress,
-        tx_hash: broadcastData.tx_hash,
+        tx_hash: txHash,
         image_hash: imageHash,
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
