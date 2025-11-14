@@ -9,6 +9,7 @@ import ConfirmEmail from "./pages/ConfirmEmail";
 import Profile from "./pages/Profile";
 import Game from "./pages/Game";
 import Arcade from "./pages/Arcade";
+import Export from "./pages/Export";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
         <Route path="/profile" element={<Profile />} />
         <Route path="/game/:id" element={<Game />} />
         <Route path="/arcade" element={<Arcade />} />
+        <Route path="/export" element={<Export />} />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>
