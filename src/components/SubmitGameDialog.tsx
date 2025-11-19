@@ -11,7 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
 
-export const SubmitGameDialog = ({ children }: { children?: React.ReactNode }) => {
+export const SubmitGameDialog = ({ children, defaultArcade = true }: { children?: React.ReactNode; defaultArcade?: boolean }) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -25,6 +25,7 @@ export const SubmitGameDialog = ({ children }: { children?: React.ReactNode }) =
   const [thumbnailUrl, setThumbnailUrl] = useState("");
   const [codebaseUrl, setCodebaseUrl] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(false);
+  const [arcade, setArcade] = useState(defaultArcade);
   
   // Token launch states
   const [launchToken, setLaunchToken] = useState(false);
@@ -192,6 +193,7 @@ export const SubmitGameDialog = ({ children }: { children?: React.ReactNode }) =
         codebase_url: codebaseUrl || null,
         creator_id: session?.user?.id || null,
         is_anonymous: isAnonymous,
+        arcade,
         status: 'approved',
         ...tokenData,
       }).select().single();
@@ -438,6 +440,20 @@ export const SubmitGameDialog = ({ children }: { children?: React.ReactNode }) =
             <p className="text-sm text-muted-foreground">
               Share your code so others can contribute and remix this project!
             </p>
+          </div>
+
+          <div className="flex items-center justify-between space-x-2 p-4 bg-glass/10 rounded-lg border border-glass-border/20">
+            <div className="space-y-0.5">
+              <Label htmlFor="arcade" className="text-base">Show in Arcade</Label>
+              <p className="text-sm text-muted-foreground">
+                Display this project in the arcade games section
+              </p>
+            </div>
+            <Switch
+              id="arcade"
+              checked={arcade}
+              onCheckedChange={setArcade}
+            />
           </div>
 
           <div className="flex items-center justify-between space-x-2 p-4 bg-glass/10 rounded-lg border border-glass-border/20">

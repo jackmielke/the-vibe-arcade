@@ -133,7 +133,7 @@ const Secret = () => {
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-black">Games by Popularity</h1>
-          <SubmitGameDialog>
+          <SubmitGameDialog defaultArcade={false}>
             <Button variant="default" size="sm" className="gap-2">
               <Plus className="h-4 w-4" />
               Add Game
