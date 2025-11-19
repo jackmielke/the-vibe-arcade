@@ -10,6 +10,7 @@ import Profile from "./pages/Profile";
 import Game from "./pages/Game";
 import Arcade from "./pages/Arcade";
 import Export from "./pages/Export";
+import Secret from "./pages/Secret";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
         <Route path="/game/:id" element={<Game />} />
         <Route path="/arcade" element={<Arcade />} />
         <Route path="/export" element={<Export />} />
+        <Route path="/secret" element={<Secret />} />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>
