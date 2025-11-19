@@ -1,20 +1,25 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Pencil, Trash2, Check, X } from "lucide-react";
+import { toast } from "sonner";
 
 const Secret = () => {
   const [password, setPassword] = useState("");
   const [isUnlocked, setIsUnlocked] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editUrl, setEditUrl] = useState("");
+  const queryClient = useQueryClient();
 
   const { data: games = [], isLoading } = useQuery({
     queryKey: ['secret-games-list'],
     queryFn: async () => {
-      // Get all games with their like counts
+      // Get all games with their like counts and play_url
       const { data, error } = await supabase
         .from('games')
-        .select('id, title, likes(count)')
+        .select('id, title, play_url, likes(count)')
         .order('created_at', { ascending: false });
       
       if (error) throw error;
@@ -23,6 +28,7 @@ const Secret = () => {
       const gamesWithLikes = data.map(game => ({
         id: game.id,
         title: game.title,
+        play_url: game.play_url,
         likeCount: game.likes?.[0]?.count || 0
       }));
       
@@ -30,6 +36,44 @@ const Secret = () => {
     },
     enabled: isUnlocked,
   });
+
+  const handleEdit = (gameId: string, currentUrl: string) => {
+    setEditingId(gameId);
+    setEditUrl(currentUrl);
+  };
+
+  const handleSave = async (gameId: string) => {
+    const { error } = await supabase
+      .from('games')
+      .update({ play_url: editUrl })
+      .eq('id', gameId);
+
+    if (error) {
+      toast.error("Failed to update link");
+      return;
+    }
+
+    toast.success("Link updated");
+    setEditingId(null);
+    queryClient.invalidateQueries({ queryKey: ['secret-games-list'] });
+  };
+
+  const handleDelete = async (gameId: string, title: string) => {
+    if (!confirm(`Delete "${title}"?`)) return;
+
+    const { error } = await supabase
+      .from('games')
+      .delete()
+      .eq('id', gameId);
+
+    if (error) {
+      toast.error("Failed to delete game");
+      return;
+    }
+
+    toast.success("Game deleted");
+    queryClient.invalidateQueries({ queryKey: ['secret-games-list'] });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,19 +112,71 @@ const Secret = () => {
 
   return (
     <div className="min-h-screen bg-background px-4 py-8">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         <h1 className="text-2xl font-black mb-6">Games by Popularity</h1>
-        <div className="space-y-2">
+        <div className="space-y-3">
           {games.map((game, index) => (
-            <div key={game.id} className="flex items-center gap-3 text-sm">
+            <div key={game.id} className="flex items-center gap-3 text-sm border border-border rounded-lg p-3">
               <span className="text-muted-foreground w-8">#{index + 1}</span>
               <span className="text-muted-foreground w-12">{game.likeCount} ❤️</span>
-              <a 
-                href={`/game/${game.id}`}
-                className="hover:text-primary underline"
-              >
-                {game.title}
-              </a>
+              <div className="flex-1 min-w-0">
+                <div className="font-medium mb-1">{game.title}</div>
+                {editingId === game.id ? (
+                  <div className="flex items-center gap-2">
+                    <Input
+                      value={editUrl}
+                      onChange={(e) => setEditUrl(e.target.value)}
+                      className="text-xs h-8"
+                      placeholder="Game URL"
+                    />
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => handleSave(game.id)}
+                      className="h-8 w-8 p-0"
+                    >
+                      <Check className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => setEditingId(null)}
+                      className="h-8 w-8 p-0"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ) : (
+                  <a 
+                    href={game.play_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-muted-foreground hover:text-primary underline truncate block"
+                  >
+                    {game.play_url}
+                  </a>
+                )}
+              </div>
+              {editingId !== game.id && (
+                <div className="flex gap-1">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => handleEdit(game.id, game.play_url)}
+                    className="h-8 w-8 p-0"
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => handleDelete(game.id, game.title)}
+                    className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
             </div>
           ))}
         </div>
