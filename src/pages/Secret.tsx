@@ -3,8 +3,9 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2, Check, X } from "lucide-react";
+import { Pencil, Trash2, Check, X, Plus } from "lucide-react";
 import { toast } from "sonner";
+import { SubmitGameDialog } from "@/components/SubmitGameDialog";
 
 const Secret = () => {
   const [password, setPassword] = useState("");
@@ -113,7 +114,15 @@ const Secret = () => {
   return (
     <div className="min-h-screen bg-background px-4 py-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-2xl font-black mb-6">Games by Popularity</h1>
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-2xl font-black">Games by Popularity</h1>
+          <SubmitGameDialog>
+            <Button variant="default" size="sm" className="gap-2">
+              <Plus className="h-4 w-4" />
+              Add Game
+            </Button>
+          </SubmitGameDialog>
+        </div>
         <div className="space-y-3">
           {games.map((game, index) => (
             <div key={game.id} className="flex items-center gap-3 text-sm border border-border rounded-lg p-3">
