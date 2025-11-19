@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { Pencil, Trash2, Check, X, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { SubmitGameDialog } from "@/components/SubmitGameDialog";
@@ -17,10 +18,10 @@ const Secret = () => {
   const { data: games = [], isLoading } = useQuery({
     queryKey: ['secret-games-list'],
     queryFn: async () => {
-      // Get all games with their like counts and play_url
+      // Get all games with their like counts, play_url, and arcade status
       const { data, error } = await supabase
         .from('games')
-        .select('id, title, play_url, likes(count)')
+        .select('id, title, play_url, arcade, likes(count)')
         .order('created_at', { ascending: false });
       
       if (error) throw error;
@@ -30,6 +31,7 @@ const Secret = () => {
         id: game.id,
         title: game.title,
         play_url: game.play_url,
+        arcade: game.arcade,
         likeCount: game.likes?.[0]?.count || 0
       }));
       
@@ -56,6 +58,21 @@ const Secret = () => {
 
     toast.success("Link updated");
     setEditingId(null);
+    queryClient.invalidateQueries({ queryKey: ['secret-games-list'] });
+  };
+
+  const handleToggleArcade = async (gameId: string, currentArcade: boolean) => {
+    const { error } = await supabase
+      .from('games')
+      .update({ arcade: !currentArcade })
+      .eq('id', gameId);
+
+    if (error) {
+      toast.error("Failed to update arcade status");
+      return;
+    }
+
+    toast.success(currentArcade ? "Removed from arcade" : "Added to arcade");
     queryClient.invalidateQueries({ queryKey: ['secret-games-list'] });
   };
 
@@ -128,6 +145,16 @@ const Secret = () => {
             <div key={game.id} className="flex items-center gap-3 text-sm border border-border rounded-lg p-3">
               <span className="text-muted-foreground w-8">#{index + 1}</span>
               <span className="text-muted-foreground w-12">{game.likeCount} ❤️</span>
+              <div className="flex items-center gap-2">
+                <Switch 
+                  checked={game.arcade}
+                  onCheckedChange={() => handleToggleArcade(game.id, game.arcade)}
+                  className="data-[state=checked]:bg-primary"
+                />
+                <span className="text-xs text-muted-foreground whitespace-nowrap">
+                  {game.arcade ? "Arcade" : "Portfolio"}
+                </span>
+              </div>
               <div className="flex-1 min-w-0">
                 <div className="font-medium mb-1">{game.title}</div>
                 {editingId === game.id ? (
