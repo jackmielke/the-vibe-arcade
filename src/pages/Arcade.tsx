@@ -26,6 +26,7 @@ const Arcade = () => {
           profiles(username, avatar_url)
         `)
         .eq('status', 'approved')
+        .eq('arcade', true)
         .order('created_at', { ascending: false });
       
       if (error) throw error;

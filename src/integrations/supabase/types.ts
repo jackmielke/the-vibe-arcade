@@ -157,6 +157,7 @@ export type Database = {
       }
       games: {
         Row: {
+          arcade: boolean
           aspect_ratio: Database["public"]["Enums"]["aspect_ratio"]
           codebase_url: string | null
           created_at: string
@@ -178,6 +179,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          arcade?: boolean
           aspect_ratio?: Database["public"]["Enums"]["aspect_ratio"]
           codebase_url?: string | null
           created_at?: string
@@ -199,6 +201,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          arcade?: boolean
           aspect_ratio?: Database["public"]["Enums"]["aspect_ratio"]
           codebase_url?: string | null
           created_at?: string
