@@ -11,7 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
 
-export const SubmitGameDialog = () => {
+export const SubmitGameDialog = ({ children }: { children?: React.ReactNode }) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -262,14 +262,16 @@ export const SubmitGameDialog = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button 
-          variant="arcade" 
-          size="lg" 
-          className="gap-2 font-bold text-lg px-8 py-6 rounded-full shadow-[var(--glass-glow)] hover:shadow-[var(--glass-intense)] transition-all"
-        >
-          <Plus className="h-5 w-5" />
-          Submit a Game
-        </Button>
+        {children || (
+          <Button 
+            variant="arcade" 
+            size="lg" 
+            className="gap-2 font-bold text-lg px-8 py-6 rounded-full shadow-[var(--glass-glow)] hover:shadow-[var(--glass-intense)] transition-all"
+          >
+            <Plus className="h-5 w-5" />
+            Submit a Game
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
