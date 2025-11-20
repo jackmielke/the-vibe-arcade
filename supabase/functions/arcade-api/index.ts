@@ -13,9 +13,107 @@ Deno.serve(async (req) => {
 
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY')!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+    const url = new URL(req.url);
+    const path = url.pathname;
+
+    // Handle POST requests for likes and comments
+    if (req.method === 'POST') {
+      const body = await req.json();
+      
+      if (path.endsWith('/like')) {
+        const { game_id, anonymous_id } = body;
+        
+        if (!game_id) {
+          return new Response(
+            JSON.stringify({ success: false, error: 'game_id is required' }),
+            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+
+        // Check if already liked by this anonymous_id
+        if (anonymous_id) {
+          const { data: existing } = await supabase
+            .from('likes')
+            .select('id')
+            .eq('game_id', game_id)
+            .eq('anonymous_id', anonymous_id)
+            .maybeSingle();
+
+          if (existing) {
+            return new Response(
+              JSON.stringify({ success: false, error: 'Already liked' }),
+              { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+            );
+          }
+        }
+
+        const { data, error } = await supabase
+          .from('likes')
+          .insert({ game_id, anonymous_id })
+          .select()
+          .single();
+
+        if (error) {
+          console.error('Error creating like:', error);
+          return new Response(
+            JSON.stringify({ success: false, error: error.message }),
+            { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+
+        return new Response(
+          JSON.stringify({ success: true, data }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      if (path.endsWith('/comment')) {
+        const { game_id, content, anonymous_id } = body;
+        
+        if (!game_id || !content) {
+          return new Response(
+            JSON.stringify({ success: false, error: 'game_id and content are required' }),
+            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+
+        if (content.trim().length === 0 || content.length > 1000) {
+          return new Response(
+            JSON.stringify({ success: false, error: 'Content must be between 1 and 1000 characters' }),
+            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+
+        const { data, error } = await supabase
+          .from('comments')
+          .insert({ game_id, content: content.trim(), anonymous_id })
+          .select()
+          .single();
+
+        if (error) {
+          console.error('Error creating comment:', error);
+          return new Response(
+            JSON.stringify({ success: false, error: error.message }),
+            { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+
+        return new Response(
+          JSON.stringify({ success: true, data }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      return new Response(
+        JSON.stringify({ success: false, error: 'Invalid endpoint' }),
+        { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Handle GET request for fetching arcade projects
     console.log('Fetching arcade projects...');
 
     // Fetch all approved arcade projects
