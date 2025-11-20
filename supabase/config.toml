@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.launch-token]
 verify_jwt = false
+
+[functions.arcade-api]
+verify_jwt = false
