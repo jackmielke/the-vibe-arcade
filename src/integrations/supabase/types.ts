@@ -43,28 +43,31 @@ export type Database = {
       }
       comments: {
         Row: {
+          anonymous_id: string | null
           content: string
           created_at: string
           game_id: string
           id: string
           updated_at: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
+          anonymous_id?: string | null
           content: string
           created_at?: string
           game_id: string
           id?: string
           updated_at?: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
+          anonymous_id?: string | null
           content?: string
           created_at?: string
           game_id?: string
           id?: string
           updated_at?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -234,22 +237,25 @@ export type Database = {
       }
       likes: {
         Row: {
+          anonymous_id: string | null
           created_at: string
           game_id: string
           id: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
+          anonymous_id?: string | null
           created_at?: string
           game_id: string
           id?: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
+          anonymous_id?: string | null
           created_at?: string
           game_id?: string
           id?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: [
           {
