@@ -13,6 +13,7 @@ const Secret = () => {
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editUrl, setEditUrl] = useState("");
+  const [editTitle, setEditTitle] = useState("");
   const queryClient = useQueryClient();
 
   const { data: games = [], isLoading } = useQuery({
@@ -40,23 +41,24 @@ const Secret = () => {
     enabled: isUnlocked,
   });
 
-  const handleEdit = (gameId: string, currentUrl: string) => {
+  const handleEdit = (gameId: string, currentUrl: string, currentTitle: string) => {
     setEditingId(gameId);
     setEditUrl(currentUrl);
+    setEditTitle(currentTitle);
   };
 
   const handleSave = async (gameId: string) => {
     const { error } = await supabase
       .from('games')
-      .update({ play_url: editUrl })
+      .update({ play_url: editUrl, title: editTitle })
       .eq('id', gameId);
 
     if (error) {
-      toast.error("Failed to update link");
+      toast.error("Failed to update");
       return;
     }
 
-    toast.success("Link updated");
+    toast.success("Updated successfully");
     setEditingId(null);
     queryClient.invalidateQueries({ queryKey: ['secret-games-list'] });
   };
@@ -156,41 +158,51 @@ const Secret = () => {
                 </span>
               </div>
               <div className="flex-1 min-w-0">
-                <div className="font-medium mb-1">{game.title}</div>
                 {editingId === game.id ? (
-                  <div className="flex items-center gap-2">
+                  <div className="space-y-2">
                     <Input
-                      value={editUrl}
-                      onChange={(e) => setEditUrl(e.target.value)}
-                      className="text-xs h-8"
-                      placeholder="Game URL"
+                      value={editTitle}
+                      onChange={(e) => setEditTitle(e.target.value)}
+                      className="text-sm h-8 font-medium"
+                      placeholder="Game Title"
                     />
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => handleSave(game.id)}
-                      className="h-8 w-8 p-0"
-                    >
-                      <Check className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => setEditingId(null)}
-                      className="h-8 w-8 p-0"
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
+                    <div className="flex items-center gap-2">
+                      <Input
+                        value={editUrl}
+                        onChange={(e) => setEditUrl(e.target.value)}
+                        className="text-xs h-8"
+                        placeholder="Game URL"
+                      />
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleSave(game.id)}
+                        className="h-8 w-8 p-0"
+                      >
+                        <Check className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => setEditingId(null)}
+                        className="h-8 w-8 p-0"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                 ) : (
-                  <a 
-                    href={game.play_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs text-muted-foreground hover:text-primary underline truncate block"
-                  >
-                    {game.play_url}
-                  </a>
+                  <>
+                    <div className="font-medium mb-1">{game.title}</div>
+                    <a 
+                      href={game.play_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-muted-foreground hover:text-primary underline truncate block"
+                    >
+                      {game.play_url}
+                    </a>
+                  </>
                 )}
               </div>
               {editingId !== game.id && (
@@ -198,7 +210,7 @@ const Secret = () => {
                   <Button
                     size="sm"
                     variant="ghost"
-                    onClick={() => handleEdit(game.id, game.play_url)}
+                    onClick={() => handleEdit(game.id, game.play_url, game.title)}
                     className="h-8 w-8 p-0"
                   >
                     <Pencil className="h-4 w-4" />
